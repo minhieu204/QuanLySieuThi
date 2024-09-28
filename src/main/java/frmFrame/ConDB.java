@@ -17,7 +17,7 @@ public class ConDB {
         try {
             //B1: Nạp trình điều khiển
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=qlsach;encrypt=true;trustServerCertificate=true";
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=QLSIEUTHI;encrypt=true;trustServerCertificate=true";
             String user = "sa";
             String password = "1306";
             con=DriverManager.getConnection(url, user, password);
