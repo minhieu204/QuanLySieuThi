@@ -82,7 +82,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(0, 153, 255));
         jLabel1.setText("QUẢN LÝ SẢN PHẨM");
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông tin sản phẩm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông tin sản phẩm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 3, 18))); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("Mã sản phẩm:");
@@ -207,7 +207,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tác vụ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tác vụ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 3, 18))); // NOI18N
 
         them.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         them.setText("Thêm");
@@ -378,10 +378,10 @@ public class frmQLSanpham extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ thông tin!");
             return;
         }
-//        if(!ktratrung(ma)){
-//            JOptionPane.showMessageDialog(this, "Mã sách đã tồn tại");
-//            return;
-//        }
+        if(!ktratrung(masp)){
+            JOptionPane.showMessageDialog(this, "Mã sản phẩm đã tồn tại");
+            return;
+        }
         try {
             con=ConDB.ketnoiDB();
             String sql= "insert into sanpham values('"+ masp +"', N'"+ tensp +"', '"+ mancc +"', '"+ gian +"', '"+ giab +"', '"+ sl +"', '"+ ngayn +"', '"+ dvt +"', '"+ mann +"')";
@@ -607,6 +607,22 @@ public class frmQLSanpham extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private boolean ktratrung(String ma){
+        boolean kq=false;
+        try {
+            con=ConDB.ketnoiDB();
+            String sql="select * from sanpham where masp='"+ma+"'";
+            Statement st= con.createStatement();
+            ResultSet rs= st.executeQuery(sql);
+            if(!rs.next()){
+                kq=true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return kq;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
