@@ -363,47 +363,6 @@ public class frmQLSanpham extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
     Connection con;
-    private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
-        String masp=masanpham.getText().trim();
-        String tensp=tensanpham.getText().trim();
-        String tenncc=nhacungcap.getSelectedItem().toString();
-        String mancc=ncc1.get(tenncc);
-        String gian=gianhap.getText().trim();
-        String giab=giaban.getText().trim();
-        String sl=soluong.getText().trim();
-        Date ngayn= new Date(ngaynhap.getDate().getTime());
-        String dvt=donvitinh.getText().trim();
-        String mann=nguoinhap.getText().trim();
-        if(masp.equals("") || tensp.equals("") || tenncc.equals("Chọn nhà cung cấp") || gian.equals("") || giab.equals("") || sl.equals("") || dvt.equals("") || mann.equals("")){
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ thông tin!");
-            return;
-        }
-        if(!ktratrung(masp)){
-            JOptionPane.showMessageDialog(this, "Mã sản phẩm đã tồn tại");
-            return;
-        }
-        try {
-            con=ConDB.ketnoiDB();
-            String sql= "insert into sanpham values('"+ masp +"', N'"+ tensp +"', '"+ mancc +"', '"+ gian +"', '"+ giab +"', '"+ sl +"', '"+ ngayn +"', '"+ dvt +"', '"+ mann +"')";
-            Statement st= con.createStatement();
-            st.executeUpdate(sql);
-            con.close();
-            JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
-            load_sanpham();
-            masanpham.setText("");
-            tensanpham.setText("");
-            nhacungcap.setSelectedItem("Chọn nhà cung cấp");
-            gianhap.setText("");
-            giaban.setText("");
-            soluong.setText("");
-            ngaynhap.setDate(new java.util.Date());
-            donvitinh.setText("");
-            nguoinhap.setText("");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_themActionPerformed
-
     private void tablesanphamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablesanphamMouseClicked
         int i=tablesanpham.getSelectedRow();
         DefaultTableModel tb= (DefaultTableModel) tablesanpham.getModel();
@@ -526,6 +485,47 @@ public class frmQLSanpham extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_txttiemkiemKeyReleased
+
+    private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
+        String masp=masanpham.getText().trim();
+        String tensp=tensanpham.getText().trim();
+        String tenncc=nhacungcap.getSelectedItem().toString();
+        String mancc=ncc1.get(tenncc);
+        String gian=gianhap.getText().trim();
+        String giab=giaban.getText().trim();
+        String sl=soluong.getText().trim();
+        Date ngayn= new Date(ngaynhap.getDate().getTime());
+        String dvt=donvitinh.getText().trim();
+        String mann=nguoinhap.getText().trim();
+        if(masp.equals("") || tensp.equals("") || tenncc.equals("Chọn nhà cung cấp") || gian.equals("") || giab.equals("") || sl.equals("") || dvt.equals("") || mann.equals("")){
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ thông tin!");
+            return;
+        }
+        if(!ktratrung(masp)){
+            JOptionPane.showMessageDialog(this, "Mã sản phẩm đã tồn tại");
+            return;
+        }
+        try {
+            con=ConDB.ketnoiDB();
+            String sql= "insert into sanpham values('"+ masp +"', N'"+ tensp +"', '"+ mancc +"', '"+ gian +"', '"+ giab +"', '"+ sl +"', '"+ ngayn +"', '"+ dvt +"', '"+ mann +"')";
+            Statement st= con.createStatement();
+            st.executeUpdate(sql);
+            con.close();
+            JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!");
+            load_sanpham();
+            masanpham.setText("");
+            tensanpham.setText("");
+            nhacungcap.setSelectedItem("Chọn nhà cung cấp");
+            gianhap.setText("");
+            giaban.setText("");
+            soluong.setText("");
+            ngaynhap.setDate(new java.util.Date());
+            donvitinh.setText("");
+            nguoinhap.setText("");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_themActionPerformed
 
     /**
      * @param args the command line arguments
