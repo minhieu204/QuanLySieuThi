@@ -366,6 +366,11 @@ public class frmQLTaikhoan extends javax.swing.JFrame {
         jScrollPane2.setViewportView(tablestaikhoan);
 
         txttiemkiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txttiemkiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txttiemkiemActionPerformed(evt);
+            }
+        });
         txttiemkiem.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txttiemkiemKeyReleased(evt);
@@ -650,6 +655,10 @@ public class frmQLTaikhoan extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_txttiemkiemKeyReleased
+
+    private void txttiemkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txttiemkiemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txttiemkiemActionPerformed
 
     /**
      * @param args the command line arguments
