@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Vector;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -89,12 +90,27 @@ public class frmNhacungcap extends javax.swing.JFrame {
         manhacungcap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         sodienthoai.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        sodienthoai.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                sodienthoaiFocusLost(evt);
+            }
+        });
+        sodienthoai.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                sodienthoaiKeyReleased(evt);
+            }
+        });
 
         tennhacungcap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         diachi.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         email.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        email.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                emailFocusLost(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -417,6 +433,36 @@ public class frmNhacungcap extends javax.swing.JFrame {
         manhacungcap.setEnabled(false);
         them.setEnabled(false);
     }//GEN-LAST:event_tablenccMouseClicked
+
+    private void sodienthoaiKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sodienthoaiKeyReleased
+        if(!((evt.getKeyChar()>='0'&&evt.getKeyChar()<='9')||evt.getKeyChar()==(char)8)){
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số");
+            String s=sodienthoai.getText();
+            sodienthoai.setText(s.substring(0, s.length()-1));
+        }
+    }//GEN-LAST:event_sodienthoaiKeyReleased
+
+    private void emailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_emailFocusLost
+        String em=email.getText();
+        String regex;
+        regex="^[a-zA-Z][\\w-]+@([\\w]+\\.[\\w]+|[\\w]+\\.[\\w]{2,}\\.[\\w]{2,})$";
+        if(!Pattern.matches(regex, em) && !em.equals("")){
+            JOptionPane.showMessageDialog(this, "Nhập đúng định dạng email");
+            email.setText("");
+            return;
+        }
+    }//GEN-LAST:event_emailFocusLost
+
+    private void sodienthoaiFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sodienthoaiFocusLost
+        String sdt=sodienthoai.getText();
+        String regex;
+        regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
+        if(!Pattern.matches(regex, sdt) && !sdt.equals("")){
+            JOptionPane.showMessageDialog(this, "Nhập đúng số điện thoại Việt Nam");
+            sodienthoai.setText("");
+            return;
+        }
+    }//GEN-LAST:event_sodienthoaiFocusLost
 
     /**
      * @param args the command line arguments

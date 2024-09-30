@@ -113,6 +113,11 @@ public class frmQLSanpham extends javax.swing.JFrame {
         masanpham.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         soluong.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        soluong.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                soluongKeyReleased(evt);
+            }
+        });
 
         donvitinh.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -121,8 +126,18 @@ public class frmQLSanpham extends javax.swing.JFrame {
         tensanpham.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         gianhap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        gianhap.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                gianhapKeyReleased(evt);
+            }
+        });
 
         giaban.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        giaban.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                giabanKeyReleased(evt);
+            }
+        });
 
         nhacungcap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         nhacungcap.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Chọn nhà cung cấp" }));
@@ -186,7 +201,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
                     .addComponent(jLabel4)
                     .addComponent(tensanpham, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel9)
-                    .addComponent(ngaynhap, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ngaynhap, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -517,6 +532,30 @@ public class frmQLSanpham extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_themActionPerformed
+
+    private void gianhapKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_gianhapKeyReleased
+        if(!((evt.getKeyChar()>='0'&&evt.getKeyChar()<='9')||evt.getKeyChar()==(char)8)){
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số");
+            String s=gianhap.getText();
+            gianhap.setText(s.substring(0, s.length()-1));
+        }
+    }//GEN-LAST:event_gianhapKeyReleased
+
+    private void giabanKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_giabanKeyReleased
+        if(!((evt.getKeyChar()>='0'&&evt.getKeyChar()<='9')||evt.getKeyChar()==(char)8)){
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số");
+            String s=giaban.getText();
+            giaban.setText(s.substring(0, s.length()-1));
+        }
+    }//GEN-LAST:event_giabanKeyReleased
+
+    private void soluongKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_soluongKeyReleased
+        if(!((evt.getKeyChar()>='0'&&evt.getKeyChar()<='9')||evt.getKeyChar()==(char)8)){
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số");
+            String s=soluong.getText();
+            soluong.setText(s.substring(0, s.length()-1));
+        }
+    }//GEN-LAST:event_soluongKeyReleased
 
     /**
      * @param args the command line arguments

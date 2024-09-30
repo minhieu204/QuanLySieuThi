@@ -173,7 +173,7 @@
                       <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="tensanpham" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="ngaynhap" min="-2" pref="31" max="-2" attributes="0"/>
+                      <Component id="ngaynhap" min="-2" pref="39" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -285,6 +285,9 @@
               <Font name="Segoe UI" size="18" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="soluongKeyReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="donvitinh">
           <Properties>
@@ -313,6 +316,9 @@
               <Font name="Segoe UI" size="18" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="gianhapKeyReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="giaban">
           <Properties>
@@ -320,6 +326,9 @@
               <Font name="Segoe UI" size="18" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="giabanKeyReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JComboBox" name="nhacungcap">
           <Properties>

@@ -236,6 +236,10 @@
               <Font name="Segoe UI" size="18" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="sodienthoaiFocusLost"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="sodienthoaiKeyReleased"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="tennhacungcap">
           <Properties>
@@ -257,6 +261,9 @@
               <Font name="Segoe UI" size="18" style="0"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="emailFocusLost"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
