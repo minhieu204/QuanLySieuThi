@@ -33,16 +33,14 @@ public class Dashboard extends javax.swing.JFrame {
         jMenu5 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu18 = new javax.swing.JMenu();
         jMenu10 = new javax.swing.JMenu();
         jMenu11 = new javax.swing.JMenu();
         jMenu12 = new javax.swing.JMenu();
-        jMenu13 = new javax.swing.JMenu();
         jMenu14 = new javax.swing.JMenu();
         jMenu15 = new javax.swing.JMenu();
         jMenu16 = new javax.swing.JMenu();
         jMenu17 = new javax.swing.JMenu();
-        jMenu8 = new javax.swing.JMenu();
+        jMenu18 = new javax.swing.JMenu();
         jMenu9 = new javax.swing.JMenu();
 
         jMenu1.setText("jMenu1");
@@ -60,10 +58,8 @@ public class Dashboard extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jMenuBar1.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(0, 153, 255)));
+        jMenuBar1.setFocusTraversalPolicyProvider(true);
         jMenuBar1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-
-        jMenu18.setText("Bán hàng");
-        jMenuBar1.add(jMenu18);
 
         jMenu10.setText("Quản lý");
 
@@ -71,30 +67,24 @@ public class Dashboard extends javax.swing.JFrame {
         jMenu10.add(jMenu11);
 
         jMenu12.setText("Quản lý nhà cung cấp");
-
-        jMenu13.setText("Quản lý");
-        jMenu12.add(jMenu13);
-
         jMenu10.add(jMenu12);
 
-        jMenu14.setText("Quản lý");
-
-        jMenu15.setText("Quản lý");
-        jMenu14.add(jMenu15);
-
-        jMenu16.setText("Quản lý");
-
-        jMenu17.setText("Quản lý");
-        jMenu16.add(jMenu17);
-
-        jMenu14.add(jMenu16);
-
+        jMenu14.setText("Quản lý tài khoản");
         jMenu10.add(jMenu14);
+
+        jMenu15.setText("Quản lý nhân viên");
+        jMenu10.add(jMenu15);
+
+        jMenu16.setText("Quản lý Khách hàng");
+        jMenu10.add(jMenu16);
+
+        jMenu17.setText("Quản lý đơn hàng");
+        jMenu10.add(jMenu17);
 
         jMenuBar1.add(jMenu10);
 
-        jMenu8.setText("Bán hàng");
-        jMenuBar1.add(jMenu8);
+        jMenu18.setText("Bán hàng");
+        jMenuBar1.add(jMenu18);
 
         jMenu9.setText("Đăng xuất");
         jMenuBar1.add(jMenu9);
@@ -113,6 +103,7 @@ public class Dashboard extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     /**
@@ -157,7 +148,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu11;
     private javax.swing.JMenu jMenu12;
-    private javax.swing.JMenu jMenu13;
     private javax.swing.JMenu jMenu14;
     private javax.swing.JMenu jMenu15;
     private javax.swing.JMenu jMenu16;
@@ -167,7 +157,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;

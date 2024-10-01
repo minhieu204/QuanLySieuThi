@@ -234,7 +234,6 @@ public class frmBanhang extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        dthemkh.setPreferredSize(new java.awt.Dimension(712, 431));
         dthemkh.setResizable(false);
         dthemkh.setSize(new java.awt.Dimension(712, 431));
 
