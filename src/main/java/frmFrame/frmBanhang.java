@@ -23,7 +23,9 @@ public class frmBanhang extends javax.swing.JFrame {
     /**
      * Creates new form frmBanhang
      */
+    private dangnhap dn;
     public frmBanhang() {
+        
         initComponents();
         khachhang.setLocationRelativeTo(null);
         dthemkh.setLocationRelativeTo(null);
@@ -756,7 +758,33 @@ public class frmBanhang extends javax.swing.JFrame {
     }//GEN-LAST:event_nhaplaiActionPerformed
 
     private void them3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_them3ActionPerformed
-        // TODO add your handling code here:
+
+        String id=dangnhap.id;
+        con=ConDB.ketnoiDB();
+        System.out.println(id);
+        try {
+            String sql="Select * from quanly where maquanly='"+id+"'";
+            Statement st= con.createStatement();
+            ResultSet rs= st.executeQuery(sql);
+            if(rs.next()){
+                dispose();
+                new Dashboard().setVisible(true);
+            }else{
+                 String sql2="Select * from nhanvien where manhanvien='"+id+"'";
+                Statement st2= con.createStatement();
+                ResultSet rs2= st2.executeQuery(sql2);
+                if(rs2.next()){
+                int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn đăng xuất?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+                if(confirm == JOptionPane.YES_OPTION){
+                    NhanvienDAO.logLogout(id);
+                    System.exit(0);
+                }     
+            }else{
+                    JOptionPane.showMessageDialog(this, "Sai tên đăng nhập hoặc mật khẩu");
+                }
+            }
+        } catch (Exception e) {
+        }
     }//GEN-LAST:event_them3ActionPerformed
 
     private void thanhtoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thanhtoanActionPerformed
