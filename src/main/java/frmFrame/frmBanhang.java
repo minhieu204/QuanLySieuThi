@@ -352,6 +352,11 @@ public class frmBanhang extends javax.swing.JFrame {
         giaban.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         soluongnhap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        soluongnhap.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                soluongnhapFocusLost(evt);
+            }
+        });
         soluongnhap.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 soluongnhapKeyReleased(evt);
@@ -474,7 +479,7 @@ public class frmBanhang extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jRadioButton1)
                     .addComponent(jRadioButton2))
-                .addGap(18, 18, 18)
+                .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(thanhtien)
@@ -726,6 +731,7 @@ public class frmBanhang extends javax.swing.JFrame {
             con.close();
             JOptionPane.showMessageDialog(this, "Thanh toán thành công thành công!");
             load_giohang();
+            load_sanpham();
             thanhtoan.setEnabled(false);
         } catch (Exception e) {
             e.printStackTrace();
@@ -775,8 +781,22 @@ public class frmBanhang extends javax.swing.JFrame {
     private void soluongnhapKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_soluongnhapKeyReleased
         String giab=giaban.getText().trim();
         String slnhap=soluongnhap.getText().trim();
-        int tt=Integer.parseInt(slnhap)*Integer.parseInt(giab);
-        thanhtien.setText(String.valueOf(tt));
+        if(!slnhap.equals("")){
+            int tt=Integer.parseInt(slnhap)*Integer.parseInt(giab);
+            thanhtien.setText(String.valueOf(tt));
+        }else{
+            thanhtien.setText("......................................");
+        }
+        String slhienco=soluong.getText().trim();
+        String sln=soluongnhap.getText().trim();
+        int sl1=Integer.parseInt(slhienco);
+        int sl2=Integer.parseInt(sln);
+        if (sl2>sl1 && !sln.equals("")){
+            JOptionPane.showMessageDialog(this, "Không đủ hàng");
+            soluongnhap.setText("");
+            thanhtien.setText("......................................");
+            return;
+        }
     }//GEN-LAST:event_soluongnhapKeyReleased
 
     private void tabledonhangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabledonhangMouseClicked
@@ -873,6 +893,10 @@ public class frmBanhang extends javax.swing.JFrame {
     private void themkhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themkhActionPerformed
        dthemkh.setVisible(true);
     }//GEN-LAST:event_themkhActionPerformed
+
+    private void soluongnhapFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_soluongnhapFocusLost
+
+    }//GEN-LAST:event_soluongnhapFocusLost
 
     /**
      * @param args the command line arguments
