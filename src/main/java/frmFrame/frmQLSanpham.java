@@ -506,7 +506,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
                 v.add(rs.getString("soluong"));
                 v.add(rs.getString("ngaynhap"));
                 v.add(rs.getString("donvitinh"));
-                v.add(rs.getString("maquanly"));
+                v.add(mql2.get(rs.getString("maquanly")));
                 model.addRow(v);
             }
             tablesanpham.setModel(model);

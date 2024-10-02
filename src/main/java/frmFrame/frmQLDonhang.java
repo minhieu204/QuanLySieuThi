@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -326,7 +328,7 @@ public class frmQLDonhang extends javax.swing.JFrame {
                 v.add(rs.getString("madon"));
                 v.add(rs.getString("ngayban"));
                 v.add(rs.getString("tongtien"));
-                v.add(rs.getString("manv"));
+                v.add(manv2.get(rs.getString("manhanvien")));
                 model.addRow(v);
             }
             tabledonhang.setModel(model);
@@ -409,11 +411,18 @@ public class frmQLDonhang extends javax.swing.JFrame {
             }
         });
     }
-    
+    Map<String, String> manv1= new HashMap<>();
+    Map<String, String> manv2= new HashMap<>();
     private void load_donhang(){
         try {
             con=ConDB.ketnoiDB();
             Statement st=con.createStatement();
+            String sql2="Select * from nhanvien";
+            ResultSet rs2= st.executeQuery(sql2);
+            while(rs2.next()){
+                manv1.put(rs2.getString("hoten"), rs2.getString("manhanvien"));
+                manv2.put(rs2.getString("manhanvien"), rs2.getString("hoten"));
+            }
             String sql="Select * from donhang";
             ResultSet rs= st.executeQuery(sql);
             tabledonhang.removeAll();
@@ -424,7 +433,7 @@ public class frmQLDonhang extends javax.swing.JFrame {
                 v.add(rs.getString("madon"));
                 v.add(rs.getString("ngayban"));
                 v.add(rs.getString("tongtien"));
-                v.add(rs.getString("manv"));
+                v.add(manv2.get(rs.getString("manhanvien")));
                 model.addRow(v);
             }
             tabledonhang.setModel(model);
