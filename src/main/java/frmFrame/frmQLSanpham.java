@@ -46,6 +46,8 @@ public class frmQLSanpham extends javax.swing.JFrame {
         loadcbncc();
         load_sanpham();
         ngaynhap.setDate(new java.util.Date());
+        nguoinhap.setText(dangnhap.name);
+        nguoinhap.setEnabled(false);
     }
 
     /**
@@ -450,7 +452,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
         giaban.setText("");
         soluong.setText("");
         donvitinh.setText("");
-        nguoinhap.setText("");
+        nguoinhap.setText(dangnhap.name);
         masanpham.setEnabled(true);
         them.setEnabled(true);
     }//GEN-LAST:event_nhaplaiActionPerformed
@@ -478,7 +480,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
             giaban.setText("");
             soluong.setText("");
             donvitinh.setText("");
-            nguoinhap.setText("");
+            nguoinhap.setText(dangnhap.name);
         }else{
             return;
         }
@@ -524,7 +526,8 @@ public class frmQLSanpham extends javax.swing.JFrame {
         String sl=soluong.getText().trim();
         Date ngayn= new Date(ngaynhap.getDate().getTime());
         String dvt=donvitinh.getText().trim();
-        String mann=nguoinhap.getText().trim();
+        String tennn=nguoinhap.getText().trim();
+        String mann=mql1.get(tennn);
         if(masp.equals("") || tensp.equals("") || tenncc.equals("Chọn nhà cung cấp") || gian.equals("") || giab.equals("") || sl.equals("") || dvt.equals("") || mann.equals("")){
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ thông tin!");
             return;
@@ -549,7 +552,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
             soluong.setText("");
             ngaynhap.setDate(new java.util.Date());
             donvitinh.setText("");
-            nguoinhap.setText("");
+            nguoinhap.setText(dangnhap.name);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -807,7 +810,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
                 v.add(rs.getString("soluong"));
                 v.add(rs.getString("ngaynhap"));
                 v.add(rs.getString("donvitinh"));
-                v.add(rs.getString("maquanly"));
+                v.add(mql2.get(rs.getString("maquanly")));
                 model.addRow(v);
             }
             tablesanpham.setModel(model);

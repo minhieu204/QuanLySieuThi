@@ -140,14 +140,14 @@ public class Login extends javax.swing.JFrame {
                 dispose();
                 new Dashboard().setVisible(true);
             }else{
-                 String sql2="Select * from nhanvien where username='"+usernamee+"' and pass='"+passwords+"'";
+                String sql2="Select * from nhanvien where username='"+usernamee+"' and pass='"+passwords+"'";
                 Statement st2= con.createStatement();
                 ResultSet rs2= st2.executeQuery(sql2);
                 if(rs2.next()){
                 id=rs2.getString("manhanvien");
                 NhanvienDAO.logLogin(id);
-                dangnhap dn=new dangnhap();
                 dangnhap.id=id;
+                dangnhap.name=rs.getString("hoten");
                 JOptionPane.showMessageDialog(this, "Đăng nhập thành công với mã nhân viên: "+id);
                 dispose();
                 new frmBanhang().setVisible(true);

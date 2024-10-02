@@ -297,6 +297,9 @@ public class Dashboard extends javax.swing.JFrame {
         jLabel9.setText("QL Sản phẩm");
         jLabel9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel9.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel9MouseClicked(evt);
+            }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 jLabel9MouseEntered(evt);
             }
@@ -600,6 +603,11 @@ public class Dashboard extends javax.swing.JFrame {
         dispose();
         dangnhap.id="";
     }//GEN-LAST:event_jLabel3MouseClicked
+
+    private void jLabel9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel9MouseClicked
+        new frmQLSanpham().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_jLabel9MouseClicked
 
     /**
      * @param args the command line arguments

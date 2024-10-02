@@ -794,7 +794,7 @@ public class frmBanhang extends javax.swing.JFrame {
             String sql= "insert into donhang values('"+id+"',"
                     + "getdate(),"
                     + "(select sum(thanhtien) from giohang),"
-                    + "1)";
+                    + "'"+dangnhap.name+"')";
             String sql2="insert into chitietdonhang(madon, masp, soluong, giaban, thanhtien) "
                     + "select '"+id+"', masp, soluongnhap, giaban, thanhtien from giohang";
             String sql3="delete from giohang";
