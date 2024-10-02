@@ -136,6 +136,7 @@ public class Login extends javax.swing.JFrame {
             if(rs.next()){
                 id=rs.getString("maquanly");
                 JOptionPane.showMessageDialog(this, "Đăng nhập thành công với mã quản lý: "+id);
+                dangnhap.name=rs.getString("hoten");
                 dispose();
                 new Dashboard().setVisible(true);
             }else{

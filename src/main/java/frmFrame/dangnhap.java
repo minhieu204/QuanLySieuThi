@@ -10,4 +10,5 @@ package frmFrame;
  */
 public class dangnhap {
     public static String id; 
+    public static String name;
 }
