@@ -760,6 +760,7 @@ public class frmBanhang extends javax.swing.JFrame {
     private void them3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_them3ActionPerformed
 
         String id=dangnhap.id;
+        System.out.println(id);
         con=ConDB.ketnoiDB();
         System.out.println(id);
         try {
