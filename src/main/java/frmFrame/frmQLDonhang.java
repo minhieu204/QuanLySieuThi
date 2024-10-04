@@ -190,7 +190,7 @@ public class frmQLDonhang extends javax.swing.JFrame {
         });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel2.setText("Tìm kiếm sản phẩm:");
+        jLabel2.setText("Tìm kiếm đơn hàng:");
 
         txttiemkiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txttiemkiem.addKeyListener(new java.awt.event.KeyAdapter() {
