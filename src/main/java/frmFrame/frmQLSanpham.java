@@ -715,7 +715,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
                 i++;
             }
             //Hiệu chỉnh độ rộng của cột
-            for (int col = 0; col < tongsocot; col++) {
+            for (int col = 0; col <= tongsocot; col++) {
                 spreadsheet.autoSizeColumn(col);
             }
 

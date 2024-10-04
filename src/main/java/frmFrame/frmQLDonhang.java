@@ -4,8 +4,12 @@
  */
 package frmFrame;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -13,6 +17,19 @@ import java.util.Map;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -158,6 +175,11 @@ public class frmQLDonhang extends javax.swing.JFrame {
 
         in.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         in.setText("In");
+        in.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inActionPerformed(evt);
+            }
+        });
 
         thoat.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         thoat.setText("Thoát");
@@ -376,6 +398,119 @@ public class frmQLDonhang extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_tabledonhangMouseClicked
+    private static CellStyle DinhdangHeader(XSSFSheet sheet) {
+        // Create font
+        Font font = sheet.getWorkbook().createFont();
+        font.setFontName("Times New Roman");
+        font.setBold(true);
+        font.setFontHeightInPoints((short) 14); // font size
+        font.setColor(IndexedColors.WHITE.getIndex()); // text color
+
+        // Create CellStyle
+        CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+        cellStyle.setFont(font);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
+        cellStyle.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setWrapText(true);
+        return cellStyle;
+    }
+    private void inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inActionPerformed
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet spreadsheet = workbook.createSheet("donhang");
+            // register the columns you wish to track and compute the column width
+            CreationHelper createHelper = workbook.getCreationHelper();
+            XSSFRow row = null;
+            Cell cell = null;
+            row = spreadsheet.createRow((short) 2);
+            row.setHeight((short) 500);
+            cell = row.createCell(0, CellType.STRING);
+            cell.setCellValue("DANH SÁCH ĐƠN HÀNG");
+            //Tạo dòng tiêu đều của bảng
+            // create CellStyle
+            CellStyle cellStyle_Head = DinhdangHeader(spreadsheet);
+            row = spreadsheet.createRow((short) 3);
+            row.setHeight((short) 1000);
+            cell = row.createCell(0, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("STT");
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Mã đơn hàng");
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Ngày bán");
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Tổng tiền");
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Người bán");
+
+            
+             //Kết nối DB
+            con = ConDB.ketnoiDB();
+            String sql = "Select * From donhang";
+            PreparedStatement st = con.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            //Đổ dữ liệu từ rs vào các ô trong excel
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int tongsocot = rsmd.getColumnCount();
+            //Đinh dạng Tạo đường kẻ cho ô chứa dữ liệu
+            CellStyle cellStyle_data = spreadsheet.getWorkbook().createCellStyle();
+            cellStyle_data.setBorderLeft(BorderStyle.THIN);
+            cellStyle_data.setBorderRight(BorderStyle.THIN);
+            cellStyle_data.setBorderBottom(BorderStyle.THIN);
+            int i = 0;
+            while (rs.next()) {
+                row = spreadsheet.createRow((short) 4 + i);
+                row.setHeight((short) 400);
+                cell = row.createCell(0);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(i + 1);
+
+                cell = row.createCell(1);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(rs.getString("madon"));
+
+                //Định dạng ngày tháng trong excel
+                java.util.Date ngay = new java.util.Date(rs.getDate("ngayban").getTime());
+                CellStyle cellStyle = workbook.createCellStyle();
+                cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+                cellStyle.setBorderLeft(BorderStyle.THIN);
+                cellStyle.setBorderRight(BorderStyle.THIN);
+                cellStyle.setBorderBottom(BorderStyle.THIN);
+                cell = row.createCell(2);
+                cell.setCellValue(ngay);
+                cell.setCellStyle(cellStyle);
+                
+                cell = row.createCell(3);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(rs.getString("tongtien"));
+
+                cell = row.createCell(4);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(manv2.get(rs.getString("manhanvien"))); 
+
+                i++;
+            }
+            //Hiệu chỉnh độ rộng của cột
+            for (int col = 0; col <= tongsocot; col++) {
+                spreadsheet.autoSizeColumn(col);
+            }
+
+            File f = new File("D:\\Danhsachdonhang.xlsx");
+            FileOutputStream out = new FileOutputStream(f);
+            workbook.write(out);
+            out.close();
+            JOptionPane.showMessageDialog(this, "In file Excel thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_inActionPerformed
 
     /**
      * @param args the command line arguments
