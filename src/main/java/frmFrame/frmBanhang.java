@@ -790,11 +790,12 @@ public class frmBanhang extends javax.swing.JFrame {
 
     private void thanhtoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thanhtoanActionPerformed
         int id = new java.util.Random().nextInt(1000);
+        String tt=tongtien.getText().trim();
         try {
             con=ConDB.ketnoiDB();
             String sql= "insert into donhang values('"+id+"',"
                     + "getdate(),"
-                    + "(select sum(thanhtien) from giohang),"
+                    + "'"+tt+"',"
                     + "'"+dangnhap.id+"')";
             String sql2="insert into chitietdonhang(madon, masp, soluong, giaban, thanhtien) "
                     + "select '"+id+"', masp, soluongnhap, giaban, thanhtien from giohang";
