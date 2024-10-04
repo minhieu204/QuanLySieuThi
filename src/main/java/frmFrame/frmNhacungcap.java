@@ -4,14 +4,22 @@
  */
 package frmFrame;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Pattern;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -54,6 +62,7 @@ public class frmNhacungcap extends javax.swing.JFrame {
         xoa = new javax.swing.JButton();
         thoat = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
+        nhapfile = new javax.swing.JButton();
         txttiemkiem = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -205,34 +214,45 @@ public class frmNhacungcap extends javax.swing.JFrame {
             }
         });
 
+        nhapfile.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        nhapfile.setText("Nhập từ file");
+        nhapfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nhapfileActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(them, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(sua, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(thoat, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nhaplai, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(them, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                    .addComponent(xoa, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                    .addComponent(thoat, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                    .addComponent(nhaplai, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                    .addComponent(sua, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                    .addComponent(nhapfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(34, 34, 34)
+                .addGap(18, 18, 18)
                 .addComponent(them)
-                .addGap(33, 33, 33)
+                .addGap(18, 18, 18)
                 .addComponent(sua)
-                .addGap(32, 32, 32)
+                .addGap(18, 18, 18)
                 .addComponent(xoa)
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
+                .addComponent(nhapfile)
+                .addGap(18, 18, 18)
                 .addComponent(nhaplai)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(thoat)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         txttiemkiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -463,6 +483,47 @@ public class frmNhacungcap extends javax.swing.JFrame {
             return;
         }
     }//GEN-LAST:event_sodienthoaiFocusLost
+    private void ReadExcel(String tenfilepath) {
+        try {
+            FileInputStream fis = new FileInputStream(tenfilepath);
+            //Tạo đối tượng Excel
+            XSSFWorkbook wb = new XSSFWorkbook(fis);
+            XSSFSheet sheet = wb.getSheetAt(0); //Lấy sheet đầu tiên của file
+            //Lấy ra các dòng bảng bảng
+            Iterator<Row> itr = sheet.iterator();
+            //Đọc dữ liệu
+            while (itr.hasNext()) {//Lặp đến hết các dòng trong excel
+                Row row = itr.next();//Lấy dòng tiếp theo
+                String ma, ten, dc, em, dt;
+                ma = row.getCell(0).getStringCellValue();
+                ten = row.getCell(1).getStringCellValue();
+                dc = row.getCell(2).getStringCellValue();
+                em = row.getCell(3).getStringCellValue();
+                dt = row.getCell(4).getStringCellValue();
+                themnhacungcap(ma, ten, dc, em, dt);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    private void nhapfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhapfileActionPerformed
+        try {
+            JFileChooser fc = new JFileChooser();
+            int lc = fc.showOpenDialog(this);
+            if (lc == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String tenfile = file.getName();
+                if (tenfile.endsWith(".xlsx")) {    //endsWith chọn file có phần kết thúc ...
+                    ReadExcel(file.getPath());
+                    JOptionPane.showMessageDialog(this, "import thành công file excel");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Phải chọn file excel");
+                }
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_nhapfileActionPerformed
 
     /**
      * @param args the command line arguments
@@ -538,6 +599,24 @@ public class frmNhacungcap extends javax.swing.JFrame {
         }
         return kq;
     }
+    
+    private void themnhacungcap(String ma, String ten, String dc, String em, String dt){
+        try {
+            con=ConDB.ketnoiDB();
+            String sql="insert into nhacungcap values(?,?,?,?,?)";
+            PreparedStatement st=con.prepareStatement(sql);
+            st.setString(1, ma);
+            st.setString(2, ten);
+            st.setString(3, dc);
+            st.setString(4, em);
+            st.setString(5, dt);
+            st.executeUpdate();
+            con.close();
+            load_ncc();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField diachi;
@@ -553,6 +632,7 @@ public class frmNhacungcap extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField manhacungcap;
+    private javax.swing.JButton nhapfile;
     private javax.swing.JButton nhaplai;
     private javax.swing.JTextField sodienthoai;
     private javax.swing.JButton sua;
