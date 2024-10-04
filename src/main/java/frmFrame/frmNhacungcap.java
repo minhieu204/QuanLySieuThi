@@ -205,6 +205,11 @@ public class frmNhacungcap extends javax.swing.JFrame {
 
         thoat.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         thoat.setText("Thoát");
+        thoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thoatActionPerformed(evt);
+            }
+        });
 
         nhaplai.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         nhaplai.setText("Nhập lại");
@@ -524,6 +529,11 @@ public class frmNhacungcap extends javax.swing.JFrame {
         } catch (Exception e) {
         }
     }//GEN-LAST:event_nhapfileActionPerformed
+
+    private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
+        new Dashboard().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_thoatActionPerformed
 
     /**
      * @param args the command line arguments

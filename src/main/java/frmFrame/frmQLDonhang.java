@@ -332,7 +332,8 @@ public class frmQLDonhang extends javax.swing.JFrame {
     }//GEN-LAST:event_xoaActionPerformed
 
     private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
-        new frmNhacungcap().setVisible(true);
+        new Dashboard().setVisible(true);
+        dispose();
     }//GEN-LAST:event_thoatActionPerformed
 
     private void txttiemkiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txttiemkiemKeyReleased
@@ -557,6 +558,13 @@ public class frmQLDonhang extends javax.swing.JFrame {
             while(rs2.next()){
                 manv1.put(rs2.getString("hoten"), rs2.getString("manhanvien"));
                 manv2.put(rs2.getString("manhanvien"), rs2.getString("hoten"));
+            }
+            String sql1="Select * from quanly";
+            Statement st1= con.createStatement();
+            ResultSet rs1= st1.executeQuery(sql1);
+            while(rs1.next()){
+                manv1.put(rs1.getString("hoten"), rs1.getString("maquanly"));
+                manv2.put(rs1.getString("maquanly"), rs1.getString("hoten"));
             }
             String sql="Select * from donhang";
             ResultSet rs= st.executeQuery(sql);

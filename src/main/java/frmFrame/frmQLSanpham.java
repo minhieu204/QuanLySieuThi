@@ -276,6 +276,11 @@ public class frmQLSanpham extends javax.swing.JFrame {
 
         thoat.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         thoat.setText("Thoát");
+        thoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thoatActionPerformed(evt);
+            }
+        });
 
         nhaplai.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         nhaplai.setText("Nhập lại");
@@ -728,6 +733,11 @@ public class frmQLSanpham extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_inActionPerformed
+
+    private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
+        new Dashboard().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_thoatActionPerformed
 
     /**
      * @param args the command line arguments

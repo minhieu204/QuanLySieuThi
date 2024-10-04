@@ -854,6 +854,7 @@ public class frmBanhang extends javax.swing.JFrame {
     }//GEN-LAST:event_tablesanphamMouseClicked
 
     private void soluongnhapKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_soluongnhapKeyReleased
+        String masp=masanpham.getText().trim();
         String giab=giaban.getText().trim();
         String slnhap=soluongnhap.getText().trim();
         if(!slnhap.equals("")){
@@ -865,6 +866,18 @@ public class frmBanhang extends javax.swing.JFrame {
         String slhienco=soluong.getText().trim();
         String sln=soluongnhap.getText().trim();
         int sl1=Integer.parseInt(slhienco);
+        try {
+            con=ConDB.ketnoiDB();
+            Statement st=con.createStatement();
+            String sql="Select * from giohang where masp='"+masp+"'";
+            ResultSet rs= st.executeQuery(sql);
+            while(rs.next()){
+                sl1=sl1-rs.getInt("soluongnhap");
+            }
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         int sl2=Integer.parseInt(sln);
         if (sl2>sl1 && !sln.equals("")){
             JOptionPane.showMessageDialog(this, "Không đủ hàng");
