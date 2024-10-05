@@ -20,7 +20,6 @@ public class Dashboard extends javax.swing.JFrame {
         initComponents();
         jLabel2.setText("Chào mừng, "+dangnhap.name);
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
