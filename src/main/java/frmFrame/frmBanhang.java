@@ -5,6 +5,9 @@
 package frmFrame;
 
 import frmFrame.ConDB;
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -40,6 +43,21 @@ public class frmBanhang extends javax.swing.JFrame {
         them.setEnabled(false);
         nhaplai.setEnabled(false);
         thanhtoan.setEnabled(false);
+         jLabel1.setForeground(Color.decode("#cccccc"));
+          tenkh.setForeground(Color.decode("#cccccc"));
+          jButton1.setEnabled(false);
+          tichdiem.setEnabled(false);
+          doidiem.setEnabled(false);
+          this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                NhanvienDAO.logLogout(dangnhap.id);
+                System.exit(0); // Thoát chương trình
+            }
+        });
+          Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            NhanvienDAO.logLogout(dangnhap.id);
+        }));
     }
     String sdt="";
     String hoten="";
@@ -107,6 +125,7 @@ public class frmBanhang extends javax.swing.JFrame {
         phone = new javax.swing.JTextField();
         exit = new javax.swing.JButton();
         btnthemkh = new javax.swing.JButton();
+        grpdiem = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -135,8 +154,8 @@ public class frmBanhang extends javax.swing.JFrame {
         tablesanpham = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabledonhang = new javax.swing.JTable();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton1 = new javax.swing.JRadioButton();
+        doidiem = new javax.swing.JRadioButton();
+        tichdiem = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -561,11 +580,23 @@ public class frmBanhang extends javax.swing.JFrame {
         });
         jScrollPane2.setViewportView(tabledonhang);
 
-        jRadioButton2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jRadioButton2.setText("Đổi điểm");
+        grpdiem.add(doidiem);
+        doidiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        doidiem.setText("Đổi điểm");
+        doidiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doidiemActionPerformed(evt);
+            }
+        });
 
-        jRadioButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jRadioButton1.setText("Tích điểm");
+        grpdiem.add(tichdiem);
+        tichdiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        tichdiem.setText("Tích điểm");
+        tichdiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tichdiemActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setText("KH:");
@@ -580,6 +611,11 @@ public class frmBanhang extends javax.swing.JFrame {
 
         jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jCheckBox1.setText("Tích điểm hoặc đổi điểm");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
 
         tenkh.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         tenkh.setText("............................................");
@@ -616,9 +652,9 @@ public class frmBanhang extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jRadioButton1)
+                                        .addComponent(tichdiem)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jRadioButton2)))
+                                        .addComponent(doidiem)))
                                 .addGap(155, 155, 155))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
@@ -672,8 +708,8 @@ public class frmBanhang extends javax.swing.JFrame {
                             .addComponent(tenkh))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jRadioButton1)
-                            .addComponent(jRadioButton2))
+                            .addComponent(tichdiem)
+                            .addComponent(doidiem))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -791,6 +827,45 @@ public class frmBanhang extends javax.swing.JFrame {
     private void thanhtoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thanhtoanActionPerformed
         int id = new java.util.Random().nextInt(1000);
         String tt=tongtien.getText().trim();
+        if(jCheckBox1.isSelected()){
+             if(sdt.equals("")){
+            JOptionPane.showMessageDialog(dthemkh, "Vui lòng chọn khách hàng!");
+            return;
+        }
+             if(tichdiem.isSelected()){
+                 try {
+            con=ConDB.ketnoiDB();
+                int ttien=Integer.parseInt(tt);
+                 int diemtl=diem+(ttien/1000);
+                System.out.println(diemtl);
+                Statement st5=con.createStatement();
+            String sql5=String.format("update khachhang set hoten=N'%s', diem=%d where sdt= '%s'", 
+                                    hoten, diemtl, sdt);
+            st5.executeUpdate(sql5);
+                     System.out.println("đổi điểm thành công");
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+             }
+             if(doidiem.isSelected()){
+                 try {
+            con=ConDB.ketnoiDB();
+                int ttien=Integer.parseInt(tt);
+                 int diemtl=0;
+                System.out.println(diemtl);
+                Statement st5=con.createStatement();
+            String sql5=String.format("update khachhang set hoten=N'%s', diem=%d where sdt= '%s'", 
+                                    hoten, diemtl, sdt);
+            st5.executeUpdate(sql5);
+                     System.out.println("đổi điểm thành công");
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+             }
+        }
+        
         try {
             con=ConDB.ketnoiDB();
             String sql= "insert into donhang values('"+id+"',"
@@ -805,10 +880,22 @@ public class frmBanhang extends javax.swing.JFrame {
             st.executeUpdate(sql2);
             st.executeUpdate(sql3);
             con.close();
-            JOptionPane.showMessageDialog(this, "Thanh toán thành công thành công!");
+            JOptionPane.showMessageDialog(this, "Thanh toán thành công!");
             load_giohang();
             load_sanpham();
             thanhtoan.setEnabled(false);
+            jCheckBox1.setSelected(false);
+            tenkh.setText("............................................");
+            jLabel1.setForeground(Color.decode("#cccccc"));
+          tenkh.setForeground(Color.decode("#cccccc"));
+          jButton1.setEnabled(false);
+          tichdiem.setEnabled(false);
+          doidiem.setEnabled(false);
+           thanhtien.setText("......................................");
+           tongtien.setText(".......................................");
+            sdt="";
+            hoten="";
+            diem=0;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -940,6 +1027,10 @@ public class frmBanhang extends javax.swing.JFrame {
     }//GEN-LAST:event_tblkhachhangMouseClicked
 
     private void chonkhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chonkhActionPerformed
+        if(sdt.equals("")){
+            JOptionPane.showMessageDialog(dthemkh, "Vui lòng chọn khách hàng!");
+            return;
+        }
         tenkh.setText(hoten);
         khachhang.setVisible(false);
     }//GEN-LAST:event_chonkhActionPerformed
@@ -986,6 +1077,40 @@ public class frmBanhang extends javax.swing.JFrame {
     private void soluongnhapFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_soluongnhapFocusLost
 
     }//GEN-LAST:event_soluongnhapFocusLost
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+       if(!jCheckBox1.isSelected()){
+          jLabel1.setForeground(Color.decode("#cccccc"));
+          tenkh.setForeground(Color.decode("#cccccc"));
+          jButton1.setEnabled(false);
+          tichdiem.setEnabled(false);
+          doidiem.setEnabled(false);
+        }else{
+          jLabel1.setForeground(Color.decode("#000000"));
+          tenkh.setForeground(Color.decode("#000000"));
+          jButton1.setEnabled(true);
+          tichdiem.setEnabled(true);
+          doidiem.setEnabled(true);
+        }
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void doidiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doidiemActionPerformed
+          if(sdt.equals("")){
+            JOptionPane.showMessageDialog(dthemkh, "Vui lòng chọn khách hàng!");
+            doidiem.setSelected(false);
+            return;
+        }
+        load_tongtien();
+    }//GEN-LAST:event_doidiemActionPerformed
+
+    private void tichdiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tichdiemActionPerformed
+         if(sdt.equals("")){
+            JOptionPane.showMessageDialog(dthemkh, "Vui lòng chọn khách hàng!");
+            tichdiem.setSelected(false);
+            return;
+        }
+        load_tongtien();
+    }//GEN-LAST:event_tichdiemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1096,7 +1221,13 @@ public class frmBanhang extends javax.swing.JFrame {
                 if(rs.getString("tongtien") == null){
                     tongtien.setText(".......................................");
                 }else{
-                    tongtien.setText(rs.getString("tongtien"));
+                    if(doidiem.isSelected()){
+                        int tt=rs.getInt("tongtien");
+                        tt=tt-(diem*10);
+                        tongtien.setText(String.valueOf(tt));
+                    }else{
+                        tongtien.setText(rs.getString("tongtien"));
+                    }
                 }
             }   
             con.close();
@@ -1108,10 +1239,12 @@ public class frmBanhang extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnthemkh;
     private javax.swing.JButton chonkh;
+    private javax.swing.JRadioButton doidiem;
     private javax.swing.JTextField donvitinh;
     private javax.swing.JDialog dthemkh;
     private javax.swing.JButton exit;
     private javax.swing.JTextField giaban;
+    private javax.swing.ButtonGroup grpdiem;
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
@@ -1132,8 +1265,6 @@ public class frmBanhang extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1155,6 +1286,7 @@ public class frmBanhang extends javax.swing.JFrame {
     private javax.swing.JButton them3;
     private javax.swing.JButton themkh;
     private javax.swing.JButton thoatd;
+    private javax.swing.JRadioButton tichdiem;
     private javax.swing.JTextField tkkhachhang;
     private javax.swing.JLabel tongtien;
     private javax.swing.JTextField txthoten;

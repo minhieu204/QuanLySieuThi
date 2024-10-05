@@ -99,7 +99,6 @@ public class QLKhachhang extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1024, 768));
         setResizable(false);
         setSize(new java.awt.Dimension(1024, 768));
 
@@ -271,6 +270,11 @@ public class QLKhachhang extends javax.swing.JFrame {
 
         thoat.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         thoat.setText("Thoát");
+        thoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thoatActionPerformed(evt);
+            }
+        });
         jPanel5.add(thoat);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -340,6 +344,7 @@ public class QLKhachhang extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xoaActionPerformed
@@ -486,6 +491,11 @@ public class QLKhachhang extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }//GEN-LAST:event_jTextField1KeyReleased
+
+    private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
+        new Dashboard().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_thoatActionPerformed
 
     /**
      * @param args the command line arguments
