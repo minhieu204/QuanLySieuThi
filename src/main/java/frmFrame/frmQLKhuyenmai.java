@@ -39,85 +39,75 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         loadMaSanPham();
     }
 
-    private void loadTable() {
+     private void loadTable() {
     try {
-        // Kết nối tới cơ sở dữ liệu
         Connection con = ConDB.ketnoiDB();
         Statement st = con.createStatement();
-        
-        // Câu lệnh SQL để lấy dữ liệu từ bảng KhuyenMai và tính giá sau giảm
-        String sql = "SELECT KhuyenMai.MaKhuyenMai, KhuyenMai.TenKhuyenMai, KhuyenMai.LoaiKhuyenMai, " +
-                     "KhuyenMai.NgayBatDau, KhuyenMai.NgayKetThuc, KhuyenMai.MaSanPham, " +
-                     "KhuyenMai.DieuKienApDung, KhuyenMai.GiamGia, sanpham.GiaBan, " +
-                     "(sanpham.GiaBan * (1 - KhuyenMai.GiamGia / 100)) AS GiaSauKhuyenMai " +
-                     "FROM KhuyenMai " +
-                     "JOIN sanpham ON KhuyenMai.MaSanPham = sanpham.MaSP";
+
+        // Lấy ngày hiện tại
+        java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+
+        // Lấy dữ liệu từ bảng `KhuyenMai`
+        String sql = "SELECT MaKhuyenMai, TenKhuyenMai, MaSanPham, GiamGia, NgayBatDau, NgayKetThuc, GiaGoc, GiaSauGiam FROM KhuyenMai";
         ResultSet rs = st.executeQuery(sql);
 
-        // Xóa toàn bộ dữ liệu cũ trong bảng
-        table.removeAll();
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Mã Khuyến Mãi", "Tên Khuyến Mãi", "Mã Sản Phẩm", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giảm Giá", "Giá Gốc", "Giá Sau Khuyến Mãi"}, 0);
 
-        // Định nghĩa tiêu đề các cột cho bảng
-        String[] tieuDe = {"Mã Khuyến Mãi", "Tên Khuyến Mãi", "Loại Khuyến Mãi", "Mã Sản Phẩm", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giảm Giá","Điều Kiện", "Giá Gốc", "Giá Sau Khuyến Mãi"};
-        DefaultTableModel model = new DefaultTableModel(tieuDe, 0);
-
-        // Lặp qua các hàng trong ResultSet để lấy dữ liệu
         while (rs.next()) {
             Vector<Object> v = new Vector<>();
-            v.add(rs.getString("MaKhuyenMai"));   
-            v.add(rs.getString("TenKhuyenMai"));  
-            v.add(rs.getString("LoaiKhuyenMai"));  
-            v.add(rs.getString("MaSanPham"));   
-            v.add(rs.getDate("NgayBatDau").toString()); 
+            v.add(rs.getString("MaKhuyenMai"));
+            v.add(rs.getString("TenKhuyenMai"));
+            v.add(rs.getString("MaSanPham"));
+            v.add(rs.getDate("NgayBatDau").toString());
             v.add(rs.getDate("NgayKetThuc").toString());
-            v.add(rs.getFloat("GiamGia")); 
-            v.add(rs.getString("DieuKienApDung"));   
-            v.add(rs.getFloat("GiaBan")); // Hiển thị giá gốc
-            v.add(rs.getFloat("GiaSauKhuyenMai")); // Hiển thị giá sau khi giảm
+            v.add(rs.getFloat("GiamGia"));
+            v.add(rs.getFloat("GiaGoc"));
 
-            // Thêm dữ liệu vào model
+            // Tính toán giá sau khuyến mãi nếu khuyến mãi còn hiệu lực
+            java.sql.Date ngayBatDau = rs.getDate("NgayBatDau");
+            java.sql.Date ngayKetThuc = rs.getDate("NgayKetThuc");
+            if (currentDate.after(ngayBatDau) && currentDate.before(ngayKetThuc)) {
+                v.add(rs.getFloat("GiaSauGiam"));
+            } else {
+                v.add(rs.getFloat("GiaGoc"));
+            }
+
             model.addRow(v);
         }
 
-        // Gán model cho bảng JTable
         table.setModel(model);
-        
-        // Đóng kết nối cơ sở dữ liệu
         con.close();
-
     } catch (Exception e) {
         e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu lên bảng!");
+        JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu!");
     }
 }
+
+
+
+
 
     
     private void loadMaSanPham() {
-    try {
-        // Kết nối tới cơ sở dữ liệu
-        Connection con = ConDB.ketnoiDB();
-        Statement st = con.createStatement();
+        try {
+            Connection con = ConDB.ketnoiDB();
+            Statement st = con.createStatement();
+            String sql = "SELECT masp FROM sanpham";
+            ResultSet rs = st.executeQuery(sql);
 
-        // Câu lệnh SQL để lấy danh sách mã sản phẩm
-        String sql = "SELECT masp FROM sanpham";  // Đảm bảo 'masp' là tên cột thực tế
-        ResultSet rs = st.executeQuery(sql);
+            masp.removeAllItems();
+            masp.addItem("Chọn");
 
-        // Xóa các mục cũ trong combobox
-        masp.removeAllItems();
-        masp.addItem("Chọn");
+            while (rs.next()) {
+                masp.addItem(rs.getString("masp"));
+            }
 
-        // Lặp qua các kết quả trả về và thêm vào combobox
-        while (rs.next()) {
-            masp.addItem(rs.getString("masp"));
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi tải mã sản phẩm!");
         }
-
-        // Đóng kết nối
-        con.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Lỗi khi tải mã sản phẩm!");
     }
-}
 
 
 
@@ -146,10 +136,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         ptgiam = new javax.swing.JTextField();
         makm = new javax.swing.JTextField();
         tenkm = new javax.swing.JTextField();
-        jLabel10 = new javax.swing.JLabel();
-        txtlkm = new javax.swing.JTextField();
-        jLabel11 = new javax.swing.JLabel();
-        txtdksd = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         them = new javax.swing.JButton();
         sua = new javax.swing.JButton();
@@ -223,28 +209,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
             }
         });
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setText("Loại khuyến mãi:");
-
-        txtlkm.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtlkm.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtlkmActionPerformed(evt);
-            }
-        });
-
-        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("Điều kiện áp dụng: ");
-
-        txtdksd.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtdksd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtdksdActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -253,13 +217,9 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(masp, 0, 189, Short.MAX_VALUE)
-                            .addComponent(ptgiam)))
+                        .addComponent(masp, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -270,17 +230,16 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(makm, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel7))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ngbd, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
                     .addComponent(ngkt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txtdksd)
-                    .addComponent(txtlkm))
+                    .addComponent(ptgiam))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -307,21 +266,9 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(masp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtlkm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel10))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ptgiam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(17, 17, 17))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtdksd, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(24, 24, 24))))
+                    .addComponent(jLabel7)
+                    .addComponent(ptgiam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(90, 90, 90))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tác vụ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 3, 18))); // NOI18N
@@ -512,73 +459,77 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
-    String maKM = makm.getText().trim();
-    String tenKM = tenkm.getText().trim();
-    String maSP = masp.getSelectedItem().toString();
-    String loaiKM = txtlkm.getText().trim();
-    String phanTramGiam = ptgiam.getText().trim();
-    Date ngayBD = new Date(ngbd.getDate().getTime());
-    Date ngayKT = new Date(ngkt.getDate().getTime());
-    String dkSD = txtdksd.getText().trim();
+   String maKM = makm.getText().trim();
+   String tenKM = tenkm.getText().trim();
+   String maSP = masp.getSelectedItem().toString();
+   String phanTramGiam = ptgiam.getText().trim();
+   Date ngayBD = new Date(ngbd.getDate().getTime());
+   Date ngayKT = new Date(ngkt.getDate().getTime());
+   java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis()); // Lấy ngày hiện tại
 
-    if (maKM.isEmpty() || tenKM.isEmpty() || maSP.equals("Chọn") || loaiKM.isEmpty() || phanTramGiam.isEmpty() || ngayBD == null || ngayKT == null || dkSD.isEmpty()) {
-        JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin khuyến mãi.");
-        return;
-    }
+   if (maKM.isEmpty() || tenKM.isEmpty() || maSP.equals("Chọn") || phanTramGiam.isEmpty() || ngayBD == null || ngayKT == null) {
+       JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin khuyến mãi.");
+       return;
+   }
 
-    try {
-        Connection conn = ConDB.ketnoiDB();
-        
-        // Lấy giá gốc từ bảng `sanpham`
-        String sqlGetPrice = "SELECT giaban FROM sanpham WHERE masp = ?";
-        PreparedStatement pstGetPrice = conn.prepareStatement(sqlGetPrice);
-        pstGetPrice.setString(1, maSP);
-        ResultSet rs = pstGetPrice.executeQuery();
-        float giaGoc = 0;
-        if (rs.next()) {
-            giaGoc = rs.getFloat("GiaBan");
-        }
+   try {
+       Connection conn = ConDB.ketnoiDB();
 
-        // Tính giá sau khi giảm
-        float giamGia = Float.parseFloat(phanTramGiam);
-        float giaSauGiam = giaGoc * (1 - giamGia / 100);
+       // Lấy giá gốc từ bảng `sanpham`
+       String sqlGetPrice = "SELECT giaban FROM sanpham WHERE masp = ?";
+       PreparedStatement pstGetPrice = conn.prepareStatement(sqlGetPrice);
+       pstGetPrice.setString(1, maSP);
+       ResultSet rs = pstGetPrice.executeQuery();
+       float giaGoc = 0;
+       if (rs.next()) {
+           giaGoc = rs.getFloat("giaban");
+       }
 
-        // Thêm khuyến mãi vào bảng `khuyenmai`
-        String sql = "INSERT INTO KhuyenMai (MaKhuyenMai, TenKhuyenMai, MaSanPham, LoaiKhuyenMai, GiamGia, NgayBatDau, NgayKetThuc, DieuKienApDung, GiaSauGiam) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, maKM);
-        pst.setString(2, tenKM);
-        pst.setString(3, maSP);
-        pst.setString(4, loaiKM);
-        pst.setFloat(5, giamGia);
-        pst.setDate(6, ngayBD);
-        pst.setDate(7, ngayKT);
-        pst.setString(8, dkSD);
-        pst.setFloat(9, giaSauGiam); // Lưu giá sau giảm
+       // Tính giá sau khi giảm
+       float giamGia = Float.parseFloat(phanTramGiam);
+       float giaSauGiam = giaGoc * (1 - giamGia / 100);
 
-        pst.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Thêm khuyến mãi thành công!");
+       // Thêm khuyến mãi vào bảng KhuyenMai và lưu giá gốc
+       String sqlInsertKM = "INSERT INTO KhuyenMai (MaKhuyenMai, TenKhuyenMai, MaSanPham, GiamGia, NgayBatDau, NgayKetThuc, GiaSauGiam, GiaGoc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+       PreparedStatement pstInsertKM = conn.prepareStatement(sqlInsertKM);
+       pstInsertKM.setString(1, maKM);
+       pstInsertKM.setString(2, tenKM);
+       pstInsertKM.setString(3, maSP);
+       pstInsertKM.setFloat(4, giamGia);
+       pstInsertKM.setDate(5, ngayBD);
+       pstInsertKM.setDate(6, ngayKT);
+       pstInsertKM.setFloat(7, giaSauGiam);
+       pstInsertKM.setFloat(8, giaGoc);
+       pstInsertKM.executeUpdate();
 
-        // Tải lại bảng khuyến mãi
-        loadTable();
-        conn.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Lỗi khi thêm khuyến mãi!");
-    }
+       // Kiểm tra nếu ngày hiện tại nằm trong khoảng thời gian khuyến mãi, thì mới cập nhật giá sản phẩm
+       if (currentDate.after(ngayBD) && currentDate.before(ngayKT)) {
+           String sqlUpdatePrice = "UPDATE sanpham SET giaban = ? WHERE masp = ?";
+           PreparedStatement pstUpdatePrice = conn.prepareStatement(sqlUpdatePrice);
+           pstUpdatePrice.setFloat(1, giaSauGiam); // Cập nhật giá sau khuyến mãi
+           pstUpdatePrice.setString(2, maSP);
+           pstUpdatePrice.executeUpdate();
+       }
+
+       JOptionPane.showMessageDialog(null, "Thêm khuyến mãi thành công!");
+       loadTable(); // Tải lại bảng khuyến mãi sau khi thêm mới
+       conn.close();
+   } catch (Exception e) {
+       e.printStackTrace();
+       JOptionPane.showMessageDialog(null, "Lỗi khi thêm khuyến mãi!");
+   }
     }//GEN-LAST:event_themActionPerformed
 
     private void suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suaActionPerformed
     String maKM = makm.getText().trim();
     String tenKM = tenkm.getText().trim();
     String maSP = masp.getSelectedItem().toString();
-    String loaiKM = txtlkm.getText().trim();
     String phanTramGiam = ptgiam.getText().trim();
     Date ngayBD = new Date(ngbd.getDate().getTime());
     Date ngayKT = new Date(ngkt.getDate().getTime());
-    String dkSD = txtdksd.getText().trim();
+    java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis()); // Lấy ngày hiện tại
 
-    if (maKM.isEmpty() || tenKM.isEmpty() || maSP.equals("Chọn") || loaiKM.isEmpty() || phanTramGiam.isEmpty() || ngayBD == null || ngayKT == null || dkSD.isEmpty()) {
+    if (maKM.isEmpty() || tenKM.isEmpty() || maSP.equals("Chọn") || phanTramGiam.isEmpty() || ngayBD == null || ngayKT == null) {
         JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin khuyến mãi.");
         return;
     }
@@ -586,37 +537,65 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     try {
         Connection conn = ConDB.ketnoiDB();
 
-        // Lấy giá gốc từ bảng `sanpham`
-        String sqlGetPrice = "SELECT giaban FROM sanpham WHERE masp = ?";
-        PreparedStatement pstGetPrice = conn.prepareStatement(sqlGetPrice);
-        pstGetPrice.setString(1, maSP);
-        ResultSet rs = pstGetPrice.executeQuery();
-        float giaGoc = 0;
+        // Lấy giá gốc từ bảng `KhuyenMai` nếu khuyến mãi đã tồn tại, nếu không thì lấy từ bảng `sanpham`
+        String sqlGetOriginalPrice = "SELECT GiaGoc FROM KhuyenMai WHERE MaKhuyenMai = ?";
+        PreparedStatement pstGetOriginalPrice = conn.prepareStatement(sqlGetOriginalPrice);
+        pstGetOriginalPrice.setString(1, maKM);
+        ResultSet rs = pstGetOriginalPrice.executeQuery();
+
+        float giaGoc;
         if (rs.next()) {
-            giaGoc = rs.getFloat("GiaBan");
+            // Nếu đã có giá gốc trong bảng KhuyenMai, sử dụng nó
+            giaGoc = rs.getFloat("GiaGoc");
+        } else {
+            // Nếu chưa có, lấy giá từ bảng `sanpham`
+            String sqlGetPrice = "SELECT giaban FROM sanpham WHERE masp = ?";
+            PreparedStatement pstGetPrice = conn.prepareStatement(sqlGetPrice);
+            pstGetPrice.setString(1, maSP);
+            ResultSet rsPrice = pstGetPrice.executeQuery();
+            if (rsPrice.next()) {
+                giaGoc = rsPrice.getFloat("giaban");
+            } else {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm!");
+                return;
+            }
         }
 
         // Tính giá sau khi giảm
         float giamGia = Float.parseFloat(phanTramGiam);
         float giaSauGiam = giaGoc * (1 - giamGia / 100);
 
-        // Cập nhật thông tin khuyến mãi
-        String sql = "UPDATE KhuyenMai SET TenKhuyenMai=?, MaSanPham=?, LoaiKhuyenMai=?, GiamGia=?, NgayBatDau=?, NgayKetThuc=?, DieuKienApDung=?, GiaSauGiam=? WHERE MaKhuyenMai=?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, tenKM);
-        pst.setString(2, maSP);
-        pst.setString(3, loaiKM);
-        pst.setFloat(4, giamGia);
-        pst.setDate(5, ngayBD);
-        pst.setDate(6, ngayKT);
-        pst.setString(7, dkSD);
-        pst.setFloat(8, giaSauGiam); // Lưu giá sau giảm
-        pst.setString(9, maKM);
+        // Cập nhật khuyến mãi trong bảng KhuyenMai
+        String sqlUpdateKM = "UPDATE KhuyenMai SET TenKhuyenMai=?, MaSanPham=?, GiamGia=?, NgayBatDau=?, NgayKetThuc=?, GiaSauGiam=?, GiaGoc=? WHERE MaKhuyenMai=?";
+        PreparedStatement pstUpdateKM = conn.prepareStatement(sqlUpdateKM);
+        pstUpdateKM.setString(1, tenKM);
+        pstUpdateKM.setString(2, maSP);
+        pstUpdateKM.setFloat(3, giamGia);
+        pstUpdateKM.setDate(4, ngayBD);
+        pstUpdateKM.setDate(5, ngayKT);
+        pstUpdateKM.setFloat(6, giaSauGiam);
+        pstUpdateKM.setFloat(7, giaGoc);  // Giữ nguyên giá gốc
+        pstUpdateKM.setString(8, maKM);
+        pstUpdateKM.executeUpdate();
 
-        pst.executeUpdate();
+        // Cập nhật giá sản phẩm trong bảng `sanpham`
+        String sqlUpdatePrice;
+        PreparedStatement pstUpdatePrice;
+        if (currentDate.after(ngayBD) && currentDate.before(ngayKT)) {
+            // Nếu ngày hiện tại nằm trong khoảng thời gian khuyến mãi, cập nhật giá giảm
+            sqlUpdatePrice = "UPDATE sanpham SET giaban = ? WHERE masp = ?";
+            pstUpdatePrice = conn.prepareStatement(sqlUpdatePrice);
+            pstUpdatePrice.setFloat(1, giaSauGiam);
+        } else {
+            // Nếu khuyến mãi hết hạn, khôi phục giá gốc
+            sqlUpdatePrice = "UPDATE sanpham SET giaban = ? WHERE masp = ?";
+            pstUpdatePrice = conn.prepareStatement(sqlUpdatePrice);
+            pstUpdatePrice.setFloat(1, giaGoc);
+        }
+        pstUpdatePrice.setString(2, maSP);
+        pstUpdatePrice.executeUpdate();
+
         JOptionPane.showMessageDialog(null, "Cập nhật khuyến mãi thành công!");
-
-        // Tải lại bảng khuyến mãi
         loadTable();
         conn.close();
     } catch (Exception e) {
@@ -626,22 +605,49 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     }//GEN-LAST:event_suaActionPerformed
 
     private void xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xoaActionPerformed
-    String maKM = makm.getText().trim();
+     String maKM = makm.getText().trim();
 
     if (maKM.isEmpty()) {
         JOptionPane.showMessageDialog(null, "Vui lòng nhập mã khuyến mãi cần xóa.");
         return;
     }
-    
+
     Connection conn = ConDB.ketnoiDB();
     try {
-        String sql = "DELETE FROM KhuyenMai WHERE MaKhuyenMai=?";
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, maKM);
+        // Lấy mã sản phẩm và giá gốc từ bảng `KhuyenMai`
+        String sqlGetOriginalPrice = "SELECT MaSanPham, GiaGoc FROM KhuyenMai WHERE MaKhuyenMai = ?";
+        PreparedStatement pstGetOriginalPrice = conn.prepareStatement(sqlGetOriginalPrice);
+        pstGetOriginalPrice.setString(1, maKM);
+        ResultSet rs = pstGetOriginalPrice.executeQuery();
+
+        String maSP = null;
+        float giaGoc = 0;
+        if (rs.next()) {
+            maSP = rs.getString("MaSanPham");
+            giaGoc = rs.getFloat("GiaGoc");
+        }
+
+        if (maSP != null) {
+            // Cập nhật lại giá gốc vào bảng `sanpham`
+            String sqlUpdatePrice = "UPDATE sanpham SET giaban = ? WHERE masp = ?";
+            PreparedStatement pstUpdatePrice = conn.prepareStatement(sqlUpdatePrice);
+            pstUpdatePrice.setFloat(1, giaGoc);
+            pstUpdatePrice.setString(2, maSP);
+            pstUpdatePrice.executeUpdate();
+
+            // Xóa khuyến mãi từ bảng `KhuyenMai`
+            String sql = "DELETE FROM KhuyenMai WHERE MaKhuyenMai=?";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setString(1, maKM);
+            pst.executeUpdate();
+
+            JOptionPane.showMessageDialog(null, "Xóa khuyến mãi thành công và khôi phục giá sản phẩm!");
+            loadTable();
+        } else {
+            JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm tương ứng với khuyến mãi!");
+        }
         
-        pst.executeUpdate();
-        JOptionPane.showMessageDialog(null, "Xóa khuyến mãi thành công!");
-        loadTable();
+        conn.close();
     } catch (Exception e) {
         e.printStackTrace();
         JOptionPane.showMessageDialog(null, "Lỗi khi xóa khuyến mãi!");
@@ -653,8 +659,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         tenkm.setText("");
         masp.setSelectedItem("Chọn");
         ptgiam.setText("");
-        txtlkm.setText("");
-        txtdksd.setText("");
         in.setEnabled(true);
         them.setEnabled(true);
         makm.setEnabled(true);
@@ -725,66 +729,54 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_bttkActionPerformed
 
-    private void txtlkmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtlkmActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtlkmActionPerformed
-
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         // TODO add your handling code here:
-         int i = table.getSelectedRow(); // Lấy chỉ số của hàng được chọn
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
+        int i = table.getSelectedRow(); // Lấy chỉ số của hàng được chọn
+    DefaultTableModel model = (DefaultTableModel) table.getModel();
 
-        // Gán giá trị từ bảng vào các trường trên giao diện
-        makm.setText(model.getValueAt(i, 0).toString()); // Mã khuyến mãi
-        tenkm.setText(model.getValueAt(i, 1).toString()); // Tên khuyến mãi
-        txtlkm.setText(model.getValueAt(i, 2).toString()); // Loại khuyến mãi
-        masp.setSelectedItem(model.getValueAt(i, 3).toString()); // Mã sản phẩm
-        // Xử lý ngày bắt đầu và kết thúc
-        try {
-            java.util.Date ngayBatDau = new SimpleDateFormat("yyyy-MM-dd").parse(model.getValueAt(i, 4).toString());
-            ngbd.setDate(ngayBatDau); // Ngày bắt đầu
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        try {
-            java.util.Date ngayKetThuc = new SimpleDateFormat("yyyy-MM-dd").parse(model.getValueAt(i, 5).toString());
-            ngkt.setDate(ngayKetThuc); // Ngày kết thúc
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-        ptgiam.setText(model.getValueAt(i, 6).toString()); // Giảm giá
-        txtdksd.setText(model.getValueAt(i, 7).toString()); // Điều kiện áp dụng
-       
-        
+    // Gán giá trị từ bảng vào các trường trên giao diện
+    makm.setText(model.getValueAt(i, 0).toString()); // Mã khuyến mãi
+    tenkm.setText(model.getValueAt(i, 1).toString()); // Tên khuyến mãi
+    masp.setSelectedItem(model.getValueAt(i, 2).toString()); // Mã sản phẩm
 
-// Đặt các điều kiện không cho phép sửa mã khuyến mãi và thêm mới
-        makm.setEnabled(false); // Không cho phép thay đổi mã khuyến mãi
-        them.setEnabled(false); // Vô hiệu hóa nút Thêm vì đang ở chế độ sửa
-        in.setEnabled(false);
+    // Xử lý ngày bắt đầu và kết thúc
+    try {
+        java.util.Date ngayBatDau = new SimpleDateFormat("yyyy-MM-dd").parse(model.getValueAt(i, 3).toString());
+        ngbd.setDate(ngayBatDau); // Ngày bắt đầu
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    
+    try {
+        java.util.Date ngayKetThuc = new SimpleDateFormat("yyyy-MM-dd").parse(model.getValueAt(i, 4).toString());
+        ngkt.setDate(ngayKetThuc); // Ngày kết thúc
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    
+    ptgiam.setText(model.getValueAt(i, 5).toString()); // Giảm giá
+
+    // Không cần xử lý cột "Điều kiện áp dụng" và "Loại khuyến mãi" vì đã loại bỏ
+    // Đặt các điều kiện không cho phép sửa mã khuyến mãi và thêm mới
+    makm.setEnabled(false); // Không cho phép thay đổi mã khuyến mãi
+    them.setEnabled(false); // Vô hiệu hóa nút Thêm vì đang ở chế độ sửa
+    in.setEnabled(false); // Vô hiệu hóa nút In khi chỉnh sửa
     }//GEN-LAST:event_tableMouseClicked
-
-    private void txtdksdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtdksdActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtdksdActionPerformed
 
     private void inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inActionPerformed
         // TODO add your handling code here:
-        try {
+       try {
         // Tạo Workbook và Sheet trong Excel
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet spreadsheet = workbook.createSheet("KhuyenMai");
 
-       
         XSSFRow row = null;
         Cell cell = null;
 
-     
         row = spreadsheet.createRow(0);
         cell = row.createCell(0, CellType.STRING);
         cell.setCellValue("DANH SÁCH KHUYẾN MÃI");
-        
+
         row = spreadsheet.createRow(1);
         row.setHeight((short) 500);
         cell = row.createCell(0, CellType.STRING);
@@ -794,38 +786,32 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         cell = row.createCell(2, CellType.STRING);
         cell.setCellValue("Tên Khuyến Mãi");
         cell = row.createCell(3, CellType.STRING);
-        cell.setCellValue("Loại Khuyến Mãi");
+        cell.setCellValue("Mã Sản Phẩm");
         cell = row.createCell(4, CellType.STRING);
         cell.setCellValue("Ngày Bắt Đầu");
         cell = row.createCell(5, CellType.STRING);
         cell.setCellValue("Ngày Kết Thúc");
         cell = row.createCell(6, CellType.STRING);
-        cell.setCellValue("Mã Sản Phẩm");
-        cell = row.createCell(7, CellType.STRING);
-        cell.setCellValue("Điều Kiện Áp Dụng");
-        cell = row.createCell(8, CellType.STRING);
         cell.setCellValue("Giảm Giá");
+        cell = row.createCell(7, CellType.STRING);
+        cell.setCellValue("Giá Gốc");
+        cell = row.createCell(8, CellType.STRING);
+        cell.setCellValue("Giá Sau Khuyến Mãi");
 
-      
         Connection con = ConDB.ketnoiDB();
-        String sql = "SELECT * FROM KhuyenMai";
+        String sql = "SELECT * FROM KhuyenMai JOIN sanpham ON KhuyenMai.MaSanPham = sanpham.MaSP";
         PreparedStatement st = con.prepareStatement(sql);
         ResultSet rs = st.executeQuery();
 
-       
         int i = 0;
         while (rs.next()) {
-            row = spreadsheet.createRow(2 + i); 
+            row = spreadsheet.createRow(2 + i);
             row.setHeight((short) 400);
 
-        
-            row.createCell(0).setCellValue(i + 1);
-
-      
+            row.createCell(0).setCellValue(i + 1); // STT
             row.createCell(1).setCellValue(rs.getString("MaKhuyenMai"));
             row.createCell(2).setCellValue(rs.getString("TenKhuyenMai"));
-            row.createCell(3).setCellValue(rs.getString("LoaiKhuyenMai"));
-
+            row.createCell(3).setCellValue(rs.getString("MaSanPham"));
 
             Date ngayBatDau = new Date(rs.getDate("NgayBatDau").getTime());
             Date ngayKetThuc = new Date(rs.getDate("NgayKetThuc").getTime());
@@ -842,14 +828,22 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
             cell.setCellValue(ngayKetThuc);
             cell.setCellStyle(cellStyle);
 
-            row.createCell(6).setCellValue(rs.getString("MaSanPham"));
-            row.createCell(7).setCellValue(rs.getString("DieuKienApDung"));
-            row.createCell(8).setCellValue(rs.getFloat("GiamGia"));
+            row.createCell(6).setCellValue(rs.getFloat("GiamGia"));
+            row.createCell(7).setCellValue(rs.getFloat("GiaBan")); // Giá gốc
+
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+            if (currentDate.after(ngayBatDau) && currentDate.before(ngayKetThuc)) {
+                float giaBan = rs.getFloat("GiaBan");
+                float giamGia = rs.getFloat("GiamGia");
+                float giaSauKhuyenMai = giaBan * (1 - giamGia / 100);
+                row.createCell(8).setCellValue(giaSauKhuyenMai); // Giá sau khuyến mãi
+            } else {
+                row.createCell(8).setCellValue(rs.getFloat("GiaBan")); // Hiển thị lại giá gốc nếu khuyến mãi hết hạn
+            }
 
             i++;
         }
 
-        
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Lưu file Excel");
 
@@ -858,7 +852,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
             File fileToSave = fileChooser.getSelectedFile();
             String filePath = fileToSave.getAbsolutePath();
             if (!filePath.endsWith(".xlsx")) {
-                filePath += ".xlsx"; 
+                filePath += ".xlsx";
             }
             FileOutputStream fileOut = new FileOutputStream(filePath);
             workbook.write(fileOut);
@@ -866,7 +860,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Xuất dữ liệu ra Excel thành công!");
         }
 
-      
         rs.close();
         st.close();
         con.close();
@@ -915,8 +908,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     private javax.swing.JButton bttk;
     private javax.swing.JButton in;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -940,8 +931,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     private javax.swing.JTextField tenkm;
     private javax.swing.JButton them;
     private javax.swing.JButton thoat;
-    private javax.swing.JTextField txtdksd;
-    private javax.swing.JTextField txtlkm;
     private javax.swing.JTextField txttk;
     private javax.swing.JButton xoa;
     // End of variables declaration//GEN-END:variables
