@@ -5,13 +5,33 @@
 package frmFrame;
 
 import com.toedter.calendar.JDateChooser;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -35,6 +55,26 @@ public class QLNhanvien extends javax.swing.JFrame {
     String id="";
     String name="";
     Connection con;
+     private static CellStyle DinhdangHeader(XSSFSheet sheet) {
+        // Create font
+        Font font = sheet.getWorkbook().createFont();
+        font.setFontName("Times New Roman");
+        font.setBold(true);
+        font.setFontHeightInPoints((short) 14); // font size
+        font.setColor(IndexedColors.WHITE.getIndex()); // text color
+
+        // Create CellStyle
+        CellStyle cellStyle = sheet.getWorkbook().createCellStyle();
+        cellStyle.setFont(font);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
+        cellStyle.setFillForegroundColor(IndexedColors.AQUA.getIndex());
+        cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        cellStyle.setBorderBottom(BorderStyle.THIN);
+        cellStyle.setWrapText(true);
+        return cellStyle;
+    }
+     Map<String, String> ncc1= new HashMap<>();
     private void load_taikhoan(){
         try {
             con=ConDB.ketnoiDB();
@@ -52,6 +92,7 @@ public class QLNhanvien extends javax.swing.JFrame {
                 v2.add(rs2.getString("sdt"));
                 v2.add(rs2.getString("email"));
                 model.addRow(v2);
+                ncc1.put(rs2.getString("manhanvien"), rs2.getString("hoten"));
             }
             tblnhanvien.setModel(model);
             con.close();
@@ -161,6 +202,7 @@ public class QLNhanvien extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         btnls = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
 
         jDialog1.setResizable(false);
         jDialog1.setSize(new java.awt.Dimension(712, 431));
@@ -218,7 +260,6 @@ public class QLNhanvien extends javax.swing.JFrame {
                 .addGap(67, 67, 67))
         );
 
-        jDialog2.setPreferredSize(new java.awt.Dimension(712, 431));
         jDialog2.setResizable(false);
         jDialog2.setSize(new java.awt.Dimension(712, 431));
 
@@ -478,6 +519,14 @@ public class QLNhanvien extends javax.swing.JFrame {
             }
         });
 
+        jButton8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButton8.setText("In bảng lương");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -492,34 +541,37 @@ public class QLNhanvien extends javax.swing.JFrame {
                             .addComponent(dc1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(129, 129, 129))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(btnls, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel4Layout.createSequentialGroup()
+                                    .addComponent(jButton2)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton3)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton4)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
+                                .addComponent(jLabel5)
+                                .addComponent(txttonggio)
+                                .addComponent(tennhanvien)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(btnxn)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jButton2)
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jLabel7)
+                                            .addComponent(jLabel8))
                                         .addGap(18, 18, 18)
-                                        .addComponent(jButton3)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton4)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
-                                    .addComponent(jLabel5)
-                                    .addComponent(txttonggio)
-                                    .addComponent(tennhanvien)
-                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(btnxn)
-                                        .addGroup(jPanel4Layout.createSequentialGroup()
-                                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel7)
-                                                .addComponent(jLabel8))
-                                            .addGap(18, 18, 18)
-                                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(luongh, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
-                                                .addComponent(jTextField2)))))
-                                .addComponent(jLabel3)
-                                .addComponent(jLabel6)))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(luongh, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                                            .addComponent(jTextField2)))))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel6))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnls, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 361, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -548,8 +600,10 @@ public class QLNhanvien extends javax.swing.JFrame {
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
-                .addGap(71, 71, 71)
+                .addGap(33, 33, 33)
                 .addComponent(btnls)
+                .addGap(18, 18, 18)
+                .addComponent(jButton8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
@@ -609,7 +663,7 @@ public class QLNhanvien extends javax.swing.JFrame {
     Float tonggio;
     private void btnxnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxnActionPerformed
         java.util.Date test1= dc1.getDate();
-        java.util.Date test2= dc1.getDate();
+        java.util.Date test2= dc2.getDate();
         
                 if(id.equals("")){
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên!");
@@ -776,6 +830,148 @@ public class QLNhanvien extends javax.swing.JFrame {
         new Dashboard().setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        java.util.Date test1= dc1.getDate();
+        java.util.Date test2= dc2.getDate();
+        if(test1 == null || test2==null){
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày!");
+                return;
+            }
+            bd = new Date(dc1.getDate().getTime());
+            kt = new Date(dc2.getDate().getTime()); 
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file");
+        int chon = fileChooser.showSaveDialog(null);
+        if (chon == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            String filePath = fileToSave.getAbsolutePath();
+            if (!filePath.endsWith(".xlsx")) {
+                filePath += ".xlsx";
+            }
+            System.out.println(filePath);
+            try {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet spreadsheet = workbook.createSheet("bangluong");
+            // register the columns you wish to track and compute the column width
+            CreationHelper createHelper = workbook.getCreationHelper();
+            XSSFRow row = null;
+            Cell cell = null;
+            row = spreadsheet.createRow((short) 2);
+            row.setHeight((short) 500);
+            cell = row.createCell(0, CellType.STRING);
+            cell.setCellValue("DANH SÁCH  LƯƠNG NHÂN VIÊN TỪ NGÀY "+bd+" ĐẾN "+ kt);
+            //Tạo dòng tiêu đều của bảng
+            // create CellStyle
+            CellStyle cellStyle_Head = DinhdangHeader(spreadsheet);
+            row = spreadsheet.createRow((short) 3);
+            row.setHeight((short) 1000);
+            cell = row.createCell(0, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("STT");
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Mã");
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Tên Nhân viên");
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Tổng giờ");
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Lương/h");
+            cell = row.createCell(5, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Tổng lương");
+            cell = row.createCell(6, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Thưởng");
+            cell = row.createCell(7, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Được nhận");
+            cell = row.createCell(8, CellType.STRING);
+            cell.setCellStyle(cellStyle_Head);
+            cell.setCellValue("Ngày nhận");
+            con = ConDB.ketnoiDB();
+            String sql = "Select * From luong where ngaynhan between '"+bd+"' and '"+kt+"'";
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            //Đổ dữ liệu từ rs vào các ô trong excel
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int tongsocot = rsmd.getColumnCount();
+            //Đinh dạng Tạo đường kẻ cho ô chứa dữ liệu
+            CellStyle cellStyle_data = spreadsheet.getWorkbook().createCellStyle();
+            cellStyle_data.setBorderLeft(BorderStyle.THIN);
+            cellStyle_data.setBorderRight(BorderStyle.THIN);
+            cellStyle_data.setBorderBottom(BorderStyle.THIN);
+            int i = 0;
+            while (rs.next()) {
+                row = spreadsheet.createRow((short) 4 + i);
+                row.setHeight((short) 400);
+                cell = row.createCell(0);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(i + 1);
+
+                cell = row.createCell(1);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(rs.getString("maluong"));
+                System.out.println(rs.getString("maluong"));
+                cell = row.createCell(2);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(ncc1.get(rs.getString("manhanvien")));
+
+                cell = row.createCell(3);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(rs.getString("tonggio"));
+
+                cell = row.createCell(4);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(rs.getString("luongtheogio"));
+
+                cell = row.createCell(5);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(rs.getString("tongluong"));
+
+                cell = row.createCell(6);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(rs.getString("thuong"));
+                
+                //Định dạng ngày tháng trong excel
+                java.util.Date ngay = new java.util.Date(rs.getDate("ngaynhan").getTime());
+                CellStyle cellStyle = workbook.createCellStyle();
+                cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+                cellStyle.setBorderLeft(BorderStyle.THIN);
+                cellStyle.setBorderRight(BorderStyle.THIN);
+                cellStyle.setBorderBottom(BorderStyle.THIN);
+                cell = row.createCell(8);
+                cell.setCellValue(ngay);
+                cell.setCellStyle(cellStyle);
+                
+                cell = row.createCell(7);
+                cell.setCellStyle(cellStyle_data);
+                cell.setCellValue(rs.getString("tienduocnhan"));
+                i++;
+            }
+            //Hiệu chỉnh độ rộng của cột
+            for (int col = 3; col <= tongsocot; col++) {
+                spreadsheet.autoSizeColumn(col);
+            }
+            spreadsheet.setColumnWidth(0, 2000);
+            spreadsheet.setColumnWidth(1, 2000);
+            spreadsheet.setColumnWidth(2, 6000);
+            spreadsheet.setColumnWidth(6, 3000); 
+            File f = new File(filePath);
+            FileOutputStream out = new FileOutputStream(f);
+            workbook.write(out);
+            out.close();
+            JOptionPane.showMessageDialog(this, "In file Excel thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        }
+        
+    }//GEN-LAST:event_jButton8ActionPerformed
     
     /**
      * @param args the command line arguments
@@ -824,6 +1020,7 @@ public class QLNhanvien extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JDialog jDialog2;
     private javax.swing.JLabel jLabel1;
