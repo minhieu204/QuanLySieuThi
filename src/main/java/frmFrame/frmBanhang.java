@@ -58,6 +58,7 @@ public class frmBanhang extends javax.swing.JFrame {
           Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             NhanvienDAO.logLogout(dangnhap.id);
         }));
+          khong.setVisible(false);
     }
     String sdt="";
     String hoten="";
@@ -164,6 +165,7 @@ public class frmBanhang extends javax.swing.JFrame {
         thanhtien1 = new javax.swing.JLabel();
         tongtien = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
+        khong = new javax.swing.JRadioButton();
 
         khachhang.setResizable(false);
         khachhang.setSize(new java.awt.Dimension(712, 431));
@@ -632,6 +634,8 @@ public class frmBanhang extends javax.swing.JFrame {
         jLabel17.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel17.setText("VNĐ");
 
+        grpdiem.add(khong);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -655,7 +659,8 @@ public class frmBanhang extends javax.swing.JFrame {
                                         .addComponent(tichdiem)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(doidiem)))
-                                .addGap(155, 155, 155))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(khong))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -709,7 +714,8 @@ public class frmBanhang extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(tichdiem)
-                            .addComponent(doidiem))
+                            .addComponent(doidiem)
+                            .addComponent(khong))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -719,7 +725,7 @@ public class frmBanhang extends javax.swing.JFrame {
                             .addComponent(jLabel15)
                             .addComponent(tongtien)
                             .addComponent(jLabel17))))
-                .addGap(0, 126, Short.MAX_VALUE))
+                .addGap(0, 125, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addGap(368, 368, 368)
@@ -1080,24 +1086,31 @@ public class frmBanhang extends javax.swing.JFrame {
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
        if(!jCheckBox1.isSelected()){
+           khong.setSelected(true);
+           tenkh.setText("............................................");
           jLabel1.setForeground(Color.decode("#cccccc"));
           tenkh.setForeground(Color.decode("#cccccc"));
           jButton1.setEnabled(false);
           tichdiem.setEnabled(false);
           doidiem.setEnabled(false);
+          sdt="";
+            hoten="";
+            diem=0;
+            load_tongtien();
         }else{
           jLabel1.setForeground(Color.decode("#000000"));
           tenkh.setForeground(Color.decode("#000000"));
           jButton1.setEnabled(true);
           tichdiem.setEnabled(true);
           doidiem.setEnabled(true);
+          load_tongtien();
         }
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
     private void doidiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doidiemActionPerformed
           if(sdt.equals("")){
             JOptionPane.showMessageDialog(dthemkh, "Vui lòng chọn khách hàng!");
-            doidiem.setSelected(false);
+            khong.setSelected(true);
             return;
         }
         load_tongtien();
@@ -1106,7 +1119,7 @@ public class frmBanhang extends javax.swing.JFrame {
     private void tichdiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tichdiemActionPerformed
          if(sdt.equals("")){
             JOptionPane.showMessageDialog(dthemkh, "Vui lòng chọn khách hàng!");
-            tichdiem.setSelected(false);
+            khong.setSelected(true);
             return;
         }
         load_tongtien();
@@ -1269,6 +1282,7 @@ public class frmBanhang extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JDialog khachhang;
+    private javax.swing.JRadioButton khong;
     private javax.swing.JTextField masanpham;
     private javax.swing.JButton nhaplai;
     private javax.swing.JTextField phone;
