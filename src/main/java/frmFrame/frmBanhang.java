@@ -712,10 +712,11 @@ public class frmBanhang extends javax.swing.JFrame {
                             .addComponent(jLabel1)
                             .addComponent(tenkh))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(tichdiem)
-                            .addComponent(doidiem)
-                            .addComponent(khong))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(khong, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(tichdiem)
+                                .addComponent(doidiem)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -796,7 +797,8 @@ public class frmBanhang extends javax.swing.JFrame {
     }//GEN-LAST:event_xoaActionPerformed
 
     private void nhaplaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhaplaiActionPerformed
-        // TODO add your handling code here:
+        soluongnhap.setText("");
+        thanhtien.setText("......................................");
     }//GEN-LAST:event_nhaplaiActionPerformed
 
     private void them3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_them3ActionPerformed
@@ -893,15 +895,16 @@ public class frmBanhang extends javax.swing.JFrame {
             jCheckBox1.setSelected(false);
             tenkh.setText("............................................");
             jLabel1.setForeground(Color.decode("#cccccc"));
-          tenkh.setForeground(Color.decode("#cccccc"));
-          jButton1.setEnabled(false);
-          tichdiem.setEnabled(false);
-          doidiem.setEnabled(false);
-           thanhtien.setText("......................................");
-           tongtien.setText(".......................................");
+            tenkh.setForeground(Color.decode("#cccccc"));
+            jButton1.setEnabled(false);
+            tichdiem.setEnabled(false);
+            doidiem.setEnabled(false);
+            thanhtien.setText("......................................");
+            tongtien.setText(".......................................");
             sdt="";
             hoten="";
             diem=0;
+            khong.setSelected(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
