@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -112,6 +113,11 @@ public class QLKhachhang extends javax.swing.JFrame {
         name.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         diem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        diem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                diemKeyTyped(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Họ và tên");
@@ -120,6 +126,16 @@ public class QLKhachhang extends javax.swing.JFrame {
         jLabel3.setText("Số điện thoại");
 
         phone.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        phone.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                phoneFocusLost(evt);
+            }
+        });
+        phone.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                phoneKeyTyped(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Điểm tích lũy");
@@ -496,6 +512,31 @@ public class QLKhachhang extends javax.swing.JFrame {
         new Dashboard().setVisible(true);
         dispose();
     }//GEN-LAST:event_thoatActionPerformed
+
+    private void phoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneKeyTyped
+         char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_phoneKeyTyped
+
+    private void phoneFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_phoneFocusLost
+        String sdt=phone.getText();
+        String regex;
+        regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
+        if(!Pattern.matches(regex, sdt) && !sdt.equals("")){
+            JOptionPane.showMessageDialog(this, "Nhập đúng số điện thoại Việt Nam");
+            phone.setText("");
+            return;
+        }
+    }//GEN-LAST:event_phoneFocusLost
+
+    private void diemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_diemKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_diemKeyTyped
 
     /**
      * @param args the command line arguments

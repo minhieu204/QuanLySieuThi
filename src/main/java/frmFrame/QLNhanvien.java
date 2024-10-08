@@ -272,11 +272,21 @@ public class QLNhanvien extends javax.swing.JFrame {
         jLabel9.setText("Lương theo giờ :");
 
         luongth2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        luongth2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                luongth2KeyTyped(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel10.setText("Thưởng :");
 
         thuong2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        thuong2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                thuong2KeyTyped(evt);
+            }
+        });
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jButton1.setText("Thoát");
@@ -496,6 +506,9 @@ public class QLNhanvien extends javax.swing.JFrame {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 luonghKeyReleased(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                luonghKeyTyped(evt);
+            }
         });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -505,6 +518,9 @@ public class QLNhanvien extends javax.swing.JFrame {
         jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 jTextField2KeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField2KeyTyped(evt);
             }
         });
 
@@ -972,6 +988,34 @@ public class QLNhanvien extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void luonghKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_luonghKeyTyped
+       char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_luonghKeyTyped
+
+    private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
+       char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_jTextField2KeyTyped
+
+    private void luongth2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_luongth2KeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_luongth2KeyTyped
+
+    private void thuong2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_thuong2KeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_thuong2KeyTyped
     
     /**
      * @param args the command line arguments
