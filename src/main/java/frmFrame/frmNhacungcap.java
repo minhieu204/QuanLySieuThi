@@ -479,14 +479,14 @@ public class frmNhacungcap extends javax.swing.JFrame {
     }//GEN-LAST:event_emailFocusLost
 
     private void sodienthoaiFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sodienthoaiFocusLost
-        String sdt=sodienthoai.getText();
-        String regex;
-        regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
-        if(!Pattern.matches(regex, sdt) && !sdt.equals("")){
-            JOptionPane.showMessageDialog(this, "Nhập đúng số điện thoại Việt Nam");
-            sodienthoai.setText("");
-            return;
-        }
+//        String sdt=sodienthoai.getText();
+//        String regex;
+//        regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
+//        if(!Pattern.matches(regex, sdt) && !sdt.equals("")){
+//            JOptionPane.showMessageDialog(this, "Nhập đúng số điện thoại Việt Nam");
+//            sodienthoai.setText("");
+//            return;
+//        }
     }//GEN-LAST:event_sodienthoaiFocusLost
     private void ReadExcel(String tenfilepath) {
         try {
