@@ -92,7 +92,6 @@ public class QLKhachhang extends javax.swing.JFrame {
         them = new javax.swing.JButton();
         sua = new javax.swing.JButton();
         xoa = new javax.swing.JButton();
-        print = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
         thoat = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
@@ -266,15 +265,6 @@ public class QLKhachhang extends javax.swing.JFrame {
         });
         jPanel5.add(xoa);
 
-        print.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        print.setText("In");
-        print.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printActionPerformed(evt);
-            }
-        });
-        jPanel5.add(print);
-
         nhaplai.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         nhaplai.setText("Nhập lại");
         nhaplai.addActionListener(new java.awt.event.ActionListener() {
@@ -387,10 +377,6 @@ public class QLKhachhang extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Hủy thao tác xóa");
          }                                      
     }//GEN-LAST:event_xoaActionPerformed
-
-    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_printActionPerformed
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
         String phone = this.phone.getText().trim();
@@ -591,7 +577,6 @@ public class QLKhachhang extends javax.swing.JFrame {
     private javax.swing.JTextField name;
     private javax.swing.JButton nhaplai;
     private javax.swing.JTextField phone;
-    private javax.swing.JButton print;
     private javax.swing.JButton sua;
     private javax.swing.JTable tblkh;
     private javax.swing.JButton them;
