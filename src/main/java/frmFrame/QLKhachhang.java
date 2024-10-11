@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -91,7 +92,6 @@ public class QLKhachhang extends javax.swing.JFrame {
         them = new javax.swing.JButton();
         sua = new javax.swing.JButton();
         xoa = new javax.swing.JButton();
-        print = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
         thoat = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
@@ -112,6 +112,11 @@ public class QLKhachhang extends javax.swing.JFrame {
         name.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         diem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        diem.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                diemKeyTyped(evt);
+            }
+        });
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Họ và tên");
@@ -120,6 +125,16 @@ public class QLKhachhang extends javax.swing.JFrame {
         jLabel3.setText("Số điện thoại");
 
         phone.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        phone.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                phoneFocusLost(evt);
+            }
+        });
+        phone.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                phoneKeyTyped(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Điểm tích lũy");
@@ -250,15 +265,6 @@ public class QLKhachhang extends javax.swing.JFrame {
         });
         jPanel5.add(xoa);
 
-        print.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        print.setText("In");
-        print.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printActionPerformed(evt);
-            }
-        });
-        jPanel5.add(print);
-
         nhaplai.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         nhaplai.setText("Nhập lại");
         nhaplai.addActionListener(new java.awt.event.ActionListener() {
@@ -371,10 +377,6 @@ public class QLKhachhang extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Hủy thao tác xóa");
          }                                      
     }//GEN-LAST:event_xoaActionPerformed
-
-    private void printActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_printActionPerformed
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
         String phone = this.phone.getText().trim();
@@ -497,6 +499,31 @@ public class QLKhachhang extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_thoatActionPerformed
 
+    private void phoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneKeyTyped
+         char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_phoneKeyTyped
+
+    private void phoneFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_phoneFocusLost
+        String sdt=phone.getText();
+        String regex;
+        regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
+        if(!Pattern.matches(regex, sdt) && !sdt.equals("")){
+            JOptionPane.showMessageDialog(this, "Nhập đúng số điện thoại Việt Nam");
+            phone.setText("");
+            return;
+        }
+    }//GEN-LAST:event_phoneFocusLost
+
+    private void diemKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_diemKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_diemKeyTyped
+
     /**
      * @param args the command line arguments
      */
@@ -550,7 +577,6 @@ public class QLKhachhang extends javax.swing.JFrame {
     private javax.swing.JTextField name;
     private javax.swing.JButton nhaplai;
     private javax.swing.JTextField phone;
-    private javax.swing.JButton print;
     private javax.swing.JButton sua;
     private javax.swing.JTable tblkh;
     private javax.swing.JButton them;

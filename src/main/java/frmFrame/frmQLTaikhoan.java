@@ -4,15 +4,27 @@
  */
 package frmFrame;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Date;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Pattern;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -28,6 +40,124 @@ public class frmQLTaikhoan extends javax.swing.JFrame {
         load_taikhoan();
         loadcbncc();
     }
+     private void themnhanvien(String ma, String username, String pass, String mpq, String ten, String gt, String sdt, String email){
+        try {
+            con=ConDB.ketnoiDB();
+            
+            String sql="insert into nhanvien values(?,?,?,?,?,?,?,?)";
+            PreparedStatement st=con.prepareStatement(sql);
+            st.setString(1, ma);
+            st.setString(2, username);
+            st.setString(3, pass);
+            st.setString(4, mpq);
+            st.setString(5, ten);
+            st.setString(6, gt);
+            st.setString(7, sdt);
+            st.setString(8, email);
+            st.executeUpdate();
+            con.close();
+            load_taikhoan();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+      private void themquanly(String ma, String username, String pass, String mpq, String ten, String gt, String sdt, String email){
+        try {
+            con=ConDB.ketnoiDB();
+            String sql="insert into quanly values(?,?,?,?,?,?,?,?)";
+            PreparedStatement st=con.prepareStatement(sql);
+           st.setString(1, ma);
+            st.setString(2, username);
+            st.setString(3, pass);
+            st.setString(4, mpq);
+            st.setString(5, ten);
+            st.setString(6, gt);
+            st.setString(7, sdt);
+            st.setString(8, email);
+            st.executeUpdate();
+            con.close();
+            load_taikhoan();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+       private void ReadExcel(String tenfilepath) {
+    FileInputStream fis = null;
+    try {
+        fis = new FileInputStream(tenfilepath);
+        // Tạo đối tượng Excel
+        XSSFWorkbook wb = new XSSFWorkbook(fis);
+        XSSFSheet sheet = wb.getSheetAt(0); // Lấy sheet đầu tiên của file
+
+        // Bước 1: Lưu toàn bộ các dòng vào danh sách để xử lý sau
+        List<Row> rows = new ArrayList<>();
+        Iterator<Row> itr = sheet.iterator();
+
+        while (itr.hasNext()) { // Lặp qua các dòng trong Excel
+            Row row = itr.next(); 
+            rows.add(row); // Lưu từng dòng vào danh sách
+        }
+
+        // Bước 2: Kiểm tra mã trùng lặp
+        ArrayList<String> a = new ArrayList<>();
+        ArrayList<String> b = new ArrayList<>();
+        for (Row row : rows) {
+            String ma = row.getCell(0).getStringCellValue();
+            String mpq = row.getCell(3).getStringCellValue();
+            a.add(ma);
+            b.add(mpq);
+        }
+
+        for (String ma : a) {
+            if (!ktratrung(ma)) { // Kiểm tra mã trùng
+                int confirm = JOptionPane.showConfirmDialog(this, "Phát hiện mã tài khoản trùng trong CSDL, bỏ qua tài khoản này?", "Lỗi", JOptionPane.YES_NO_OPTION);
+                if (confirm == JOptionPane.NO_OPTION) {
+                    JOptionPane.showMessageDialog(this, "Hủy thao tác nhập file");
+                    return; // Dừng nếu chọn NO
+                }
+            }
+        }
+        for(String mpq : b){
+            if(!mpq.equals("nv") && !mpq.equals("ql")){
+                JOptionPane.showMessageDialog(this, "Định dạng dữ liệu không đúng với CSDL!!!");
+                return;
+            }     
+        }
+        
+
+        for (Row row : rows) {
+            String ma = row.getCell(0).getStringCellValue();
+            String username = row.getCell(1).getStringCellValue();
+            String pass = row.getCell(2).getStringCellValue();
+            String mpq = row.getCell(3).getStringCellValue();
+            String ten = row.getCell(4).getStringCellValue();
+            String gt = row.getCell(5).getStringCellValue();
+            String sdt = row.getCell(6).getStringCellValue();
+            String email = row.getCell(7).getStringCellValue();
+
+            // Thêm dữ liệu vào hệ thống
+            if (mpq.equals("ql")) {
+                themquanly(ma, username, pass, mpq, ten, gt, sdt, email);
+            } else if (mpq.equals("nv")) {
+                themnhanvien(ma, username, pass, mpq, ten, gt, sdt, email);
+            } 
+        }
+
+        // Hiển thị thông báo thành công
+        JOptionPane.showMessageDialog(this, "Import thành công file Excel.");
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    } finally {
+        // Đóng tài nguyên
+        try {
+            if (fis != null) fis.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
     Connection con;
      private boolean ktratrung(String ma){
         boolean kq=false;
@@ -185,8 +315,23 @@ public class frmQLTaikhoan extends javax.swing.JFrame {
         mataikhoan.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         phone.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        phone.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                phoneFocusLost(evt);
+            }
+        });
+        phone.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                phoneKeyTyped(evt);
+            }
+        });
 
         email.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        email.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                emailFocusLost(evt);
+            }
+        });
 
         ten.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -298,10 +443,20 @@ public class frmQLTaikhoan extends javax.swing.JFrame {
         });
 
         in.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        in.setText("In");
+        in.setText("Nhập từ file");
+        in.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                inActionPerformed(evt);
+            }
+        });
 
         thoat.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         thoat.setText("Thoát");
+        thoat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                thoatActionPerformed(evt);
+            }
+        });
 
         nhaplai.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         nhaplai.setText("Nhập lại");
@@ -659,6 +814,57 @@ public class frmQLTaikhoan extends javax.swing.JFrame {
     private void txttiemkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txttiemkiemActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txttiemkiemActionPerformed
+
+    private void phoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneKeyTyped
+          char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_phoneKeyTyped
+
+    private void phoneFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_phoneFocusLost
+        String sdt=phone.getText();
+        String regex;
+        regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
+        if(!Pattern.matches(regex, sdt) && !sdt.equals("")){
+            JOptionPane.showMessageDialog(this, "Nhập đúng số điện thoại Việt Nam");
+            phone.setText("");
+            return;
+        }
+    }//GEN-LAST:event_phoneFocusLost
+
+    private void emailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_emailFocusLost
+         String em=email.getText();
+        String regex;
+        regex="^[a-zA-Z][\\w-]+@([\\w]+\\.[\\w]+|[\\w]+\\.[\\w]{2,}\\.[\\w]{2,})$";
+        if(!Pattern.matches(regex, em) && !em.equals("")){
+            JOptionPane.showMessageDialog(this, "Nhập đúng định dạng email");
+            email.setText("");
+            return;
+        }
+    }//GEN-LAST:event_emailFocusLost
+
+    private void inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inActionPerformed
+        try {
+            JFileChooser fc = new JFileChooser();
+            int lc = fc.showOpenDialog(this);
+            if (lc == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String tenfile = file.getName();
+                if (tenfile.endsWith(".xlsx")) {    //endsWith chọn file có phần kết thúc ...
+                    ReadExcel(file.getPath());
+                } else {
+                    JOptionPane.showMessageDialog(this, "Phải chọn file excel");
+                }
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_inActionPerformed
+
+    private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
+        new Dashboard().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_thoatActionPerformed
 
     /**
      * @param args the command line arguments
