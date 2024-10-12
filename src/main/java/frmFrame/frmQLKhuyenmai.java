@@ -48,7 +48,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
 
         
-        String sql = "SELECT MaKhuyenMai, TenKhuyenMai, MaSanPham, GiamGia, NgayBatDau, NgayKetThuc, GiaGoc, GiaSauGiam FROM KhuyenMai";
+        String sql = "SELECT * FROM KhuyenMai";
         ResultSet rs = st.executeQuery(sql);
 
         DefaultTableModel model = new DefaultTableModel(new String[]{"Mã Khuyến Mãi", "Tên Khuyến Mãi", "Mã Sản Phẩm", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giảm Giá", "Giá Gốc", "Giá Sau Khuyến Mãi"}, 0);
@@ -523,7 +523,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     String phanTramGiam = ptgiam.getText().trim();
     Date ngayBD = new Date(ngbd.getDate().getTime());
     Date ngayKT = new Date(ngkt.getDate().getTime());
-    java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis()); // Lấy ngày hiện tại
+    java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis()); 
 
     if (maKM.isEmpty() || tenKM.isEmpty() || maSP.equals("Chọn") || phanTramGiam.isEmpty() || ngayBD == null || ngayKT == null) {
         JOptionPane.showMessageDialog(null, "Vui lòng điền đầy đủ thông tin khuyến mãi.");
@@ -727,7 +727,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         // TODO add your handling code here:
-        int i = table.getSelectedRow(); 
+    int i = table.getSelectedRow(); 
     DefaultTableModel model = (DefaultTableModel) table.getModel();
 
     

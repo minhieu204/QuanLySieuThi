@@ -44,7 +44,6 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
         btlqldt = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jSeparator4 = new javax.swing.JToolBar.Separator();
-        btlbctc = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
         jSeparator6 = new javax.swing.JToolBar.Separator();
         jLabel1 = new javax.swing.JLabel();
@@ -98,20 +97,6 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
         jSeparator4.setToolTipText("");
         jSeparator4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jToolBar1.add(jSeparator4);
-
-        btlbctc.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btlbctc.setText("Báo Cáo Tài Chính");
-        btlbctc.setToolTipText("");
-        btlbctc.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btlbctc.setFocusable(false);
-        btlbctc.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btlbctc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btlbctc.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btlbctcActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btlbctc);
         jToolBar1.add(jSeparator5);
         jToolBar1.add(jSeparator6);
 
@@ -157,11 +142,6 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
         showPanel(new PanelQLDoanhThu());
     }//GEN-LAST:event_btlqldtActionPerformed
 
-    private void btlbctcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btlbctcActionPerformed
-        // TODO add your handling code here:
-        showPanel(new PanelBaoCaoTaiChinh());
-    }//GEN-LAST:event_btlbctcActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -201,7 +181,6 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btlbctc;
     private javax.swing.JButton btlqldt;
     private javax.swing.JButton btnqlcp;
     private javax.swing.JLabel jLabel1;

@@ -88,12 +88,12 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
 
         while (rs.next()) {
             Vector<Object> v = new Vector<>();
-            v.add(rs.getString("id")); // Mã phiếu
-            v.add(rs.getDate("ngayban")); // Ngày bán (kiểu DATE)
-            v.add(rs.getInt("tienban")); // Tiền bán (kiểu INT)
-            v.add(rs.getInt("tiennhap")); // Tiền nhập (kiểu INT)
-            v.add(rs.getInt("tongdoanhthuthang")); // Doanh thu tháng (kiểu INT)
-            v.add(rs.getInt("tongdoanhthunam")); // Doanh thu năm (kiểu INT)
+            v.add(rs.getString("id")); 
+            v.add(rs.getDate("ngayban")); 
+            v.add(rs.getInt("tienban")); 
+            v.add(rs.getInt("tiennhap")); 
+            v.add(rs.getInt("tongdoanhthuthang"));
+            v.add(rs.getInt("tongdoanhthunam"));
             model.addRow(v);
         }
 
@@ -216,7 +216,7 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tác vụ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
@@ -257,6 +257,11 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
 
         btexit.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btexit.setText("Thoát");
+        btexit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btexitActionPerformed(evt);
+            }
+        });
 
         in.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         in.setText("In bảng Thu Chi bán hàng");
@@ -570,6 +575,12 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
 
     }//GEN-LAST:event_inActionPerformed
 
+    private void btexitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btexitActionPerformed
+        // TODO add your handling code here:
+        new Dashboard().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_btexitActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btadd;
@@ -595,4 +606,8 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
     private javax.swing.JTextField tiennhap;
     private javax.swing.JTextField tongtien;
     // End of variables declaration//GEN-END:variables
+
+    private void dispose() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
