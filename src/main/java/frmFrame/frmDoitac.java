@@ -35,7 +35,7 @@ public class frmDoitac extends javax.swing.JFrame {
      */
     public frmDoitac() {
         initComponents();
-         loadTable();
+        loadTable();
     }
 
     
@@ -105,7 +105,7 @@ public class frmDoitac extends javax.swing.JFrame {
         in = new javax.swing.JButton();
         thoat = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
-        bttk = new javax.swing.JButton();
+        Nhap = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         TableDT = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -229,7 +229,7 @@ public class frmDoitac extends javax.swing.JFrame {
         });
 
         in.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        in.setText("In");
+        in.setText("In file");
         in.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inActionPerformed(evt);
@@ -252,11 +252,11 @@ public class frmDoitac extends javax.swing.JFrame {
             }
         });
 
-        bttk.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        bttk.setText("Tìm kiếm");
-        bttk.addActionListener(new java.awt.event.ActionListener() {
+        Nhap.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        Nhap.setText("Nhập file");
+        Nhap.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bttkActionPerformed(evt);
+                NhapActionPerformed(evt);
             }
         });
 
@@ -273,7 +273,7 @@ public class frmDoitac extends javax.swing.JFrame {
                     .addComponent(in, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(thoat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhaplai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bttk, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Nhap, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -288,12 +288,12 @@ public class frmDoitac extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(in)
                 .addGap(18, 18, 18)
+                .addComponent(Nhap)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addComponent(nhaplai)
-                .addGap(23, 23, 23)
+                .addGap(18, 18, 18)
                 .addComponent(thoat)
-                .addGap(23, 23, 23)
-                .addComponent(bttk)
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addGap(56, 56, 56))
         );
 
         TableDT.setModel(new javax.swing.table.DefaultTableModel(
@@ -546,10 +546,6 @@ public class frmDoitac extends javax.swing.JFrame {
          MaDT.setEnabled(true);
     }//GEN-LAST:event_nhaplaiActionPerformed
 
-    private void bttkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttkActionPerformed
-        
-    }//GEN-LAST:event_bttkActionPerformed
-
     private void TenCDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TenCDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_TenCDActionPerformed
@@ -591,6 +587,10 @@ public class frmDoitac extends javax.swing.JFrame {
         in.setEnabled(false); 
     }//GEN-LAST:event_TableDTMouseClicked
 
+    private void NhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NhapActionPerformed
+
+    }//GEN-LAST:event_NhapActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -630,11 +630,11 @@ public class frmDoitac extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser DateE;
     private com.toedter.calendar.JDateChooser DateS;
     private javax.swing.JTextField MaDT;
+    private javax.swing.JButton Nhap;
     private javax.swing.JTextField PhiQC;
     private javax.swing.JTextField TKDT;
     private javax.swing.JTable TableDT;
     private javax.swing.JTextField TenCD;
-    private javax.swing.JButton bttk;
     private javax.swing.JButton in;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
