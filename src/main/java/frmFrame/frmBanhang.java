@@ -16,6 +16,14 @@ import java.text.SimpleDateFormat;
 import java.util.Vector;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -886,6 +894,11 @@ public class frmBanhang extends javax.swing.JFrame {
             Statement st= con.createStatement();
             st.executeUpdate(sql);
             st.executeUpdate(sql2);
+            JasperDesign jdesign=JRXmlLoader.load("D:\\NetBeansProjects\\quanlisieuthi\\src\\main\\java\\frmFrame\\report1.jrxml");
+            JasperReport jreport=JasperCompileManager.compileReport(jdesign);
+            JasperPrint jprint=JasperFillManager.fillReport(jreport, null,con);
+            JasperViewer.viewReport(jprint);
+
             st.executeUpdate(sql3);
             con.close();
             JOptionPane.showMessageDialog(this, "Thanh toán thành công!");

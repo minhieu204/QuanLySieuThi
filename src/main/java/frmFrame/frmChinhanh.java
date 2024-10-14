@@ -5,8 +5,11 @@
 package frmFrame;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Vector;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
@@ -24,6 +27,40 @@ public class frmChinhanh extends javax.swing.JFrame {
      */
     public frmChinhanh() {
         initComponents();
+        loadTable();
+    }
+    
+    private void loadTable() {
+        try {
+            Connection con = ConDB.ketnoiDB();
+            Statement st = con.createStatement();
+
+
+            java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
+
+
+            String sql = "SELECT * FROM ChiNhanh";
+            ResultSet rs = st.executeQuery(sql);
+
+            DefaultTableModel model = new DefaultTableModel(new String[]{"Mã chi nhánh", "Tên chi nhánh",  "Địa chỉ", "Email", "Số điện thoại"}, 0);
+
+            while (rs.next()) {
+                Vector<Object> v = new Vector<>();
+                v.add(rs.getString("Machinhanh"));
+                v.add(rs.getString("Tenchinhanh"));
+                v.add(rs.getString("Diachi"));
+                v.add(rs.getString("Email"));
+                v.add(rs.getString("SDT"));
+
+                model.addRow(v);
+            }
+
+            TableCN.setModel(model);
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu!");
+        }
     }
 
     /**
@@ -39,24 +76,25 @@ public class frmChinhanh extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        manhacungcap = new javax.swing.JTextField();
-        sodienthoai = new javax.swing.JTextField();
-        tennhacungcap = new javax.swing.JTextField();
-        diachi = new javax.swing.JTextField();
-        email = new javax.swing.JTextField();
+        MaCN = new javax.swing.JTextField();
+        SDT = new javax.swing.JTextField();
+        TenCN = new javax.swing.JTextField();
+        DiaChi = new javax.swing.JTextField();
+        Email = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        TableCN = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         xoa = new javax.swing.JButton();
         thoat = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
-        nhapfile = new javax.swing.JButton();
+        In = new javax.swing.JButton();
         them = new javax.swing.JButton();
         sua = new javax.swing.JButton();
-        txttiemkiem = new javax.swing.JTextField();
+        nhapfile1 = new javax.swing.JButton();
+        TimKiem = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -73,28 +111,33 @@ public class frmChinhanh extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel7.setText("Số điện thoại:");
 
-        manhacungcap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        sodienthoai.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        sodienthoai.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                sodienthoaiFocusLost(evt);
+        MaCN.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        MaCN.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MaCNActionPerformed(evt);
             }
         });
-        sodienthoai.addKeyListener(new java.awt.event.KeyAdapter() {
+
+        SDT.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        SDT.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                SDTFocusLost(evt);
+            }
+        });
+        SDT.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                sodienthoaiKeyReleased(evt);
+                SDTKeyReleased(evt);
             }
         });
 
-        tennhacungcap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        TenCN.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        diachi.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        DiaChi.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
-        email.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        email.addFocusListener(new java.awt.event.FocusAdapter() {
+        Email.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        Email.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
-                emailFocusLost(evt);
+                EmailFocusLost(evt);
             }
         });
 
@@ -119,12 +162,12 @@ public class frmChinhanh extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(tennhacungcap, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(manhacungcap, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(diachi, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TenCN, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(MaCN, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(DiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(sodienthoai, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(SDT, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -133,27 +176,27 @@ public class frmChinhanh extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(manhacungcap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(MaCN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(36, 36, 36)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(tennhacungcap, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(TenCN, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(diachi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(DiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(37, 37, 37)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Email, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
-                    .addComponent(sodienthoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(SDT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        TableCN.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -164,7 +207,12 @@ public class frmChinhanh extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        TableCN.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableCNMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(TableCN);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 153, 255));
@@ -197,11 +245,11 @@ public class frmChinhanh extends javax.swing.JFrame {
             }
         });
 
-        nhapfile.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        nhapfile.setText("Nhập từ file");
-        nhapfile.addActionListener(new java.awt.event.ActionListener() {
+        In.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        In.setText("In file");
+        In.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nhapfileActionPerformed(evt);
+                InActionPerformed(evt);
             }
         });
 
@@ -221,32 +269,44 @@ public class frmChinhanh extends javax.swing.JFrame {
             }
         });
 
+        nhapfile1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        nhapfile1.setText("Nhập file");
+        nhapfile1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nhapfile1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(them, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(xoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(thoat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nhaplai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(sua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nhapfile, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(16, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(them, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(xoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(thoat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(nhaplai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(sua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(In, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nhapfile1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+                .addContainerGap()
                 .addComponent(them)
                 .addGap(18, 18, 18)
                 .addComponent(sua)
                 .addGap(18, 18, 18)
                 .addComponent(xoa)
                 .addGap(18, 18, 18)
-                .addComponent(nhapfile)
+                .addComponent(nhapfile1)
+                .addGap(18, 18, 18)
+                .addComponent(In)
                 .addGap(18, 18, 18)
                 .addComponent(nhaplai)
                 .addGap(18, 18, 18)
@@ -254,10 +314,10 @@ public class frmChinhanh extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        txttiemkiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txttiemkiem.addKeyListener(new java.awt.event.KeyAdapter() {
+        TimKiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        TimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txttiemkiemKeyReleased(evt);
+                TimKiemKeyReleased(evt);
             }
         });
 
@@ -278,7 +338,7 @@ public class frmChinhanh extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
-                        .addComponent(txttiemkiem))
+                        .addComponent(TimKiem))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -298,7 +358,7 @@ public class frmChinhanh extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txttiemkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(TimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(39, 39, 39))
@@ -307,59 +367,51 @@ public class frmChinhanh extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void sodienthoaiFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sodienthoaiFocusLost
-        String sdt=sodienthoai.getText();
+    private void SDTFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_SDTFocusLost
+        String sdt=SDT.getText();
         String regex;
         regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
         if(!Pattern.matches(regex, sdt) && !sdt.equals("")){
             JOptionPane.showMessageDialog(this, "Nhập đúng số điện thoại Việt Nam");
-            sodienthoai.setText("");
+            SDT.setText("");
             return;
         }
-    }//GEN-LAST:event_sodienthoaiFocusLost
+    }//GEN-LAST:event_SDTFocusLost
 
-    private void sodienthoaiKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_sodienthoaiKeyReleased
+    private void SDTKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SDTKeyReleased
         if(!((evt.getKeyChar()>='0'&&evt.getKeyChar()<='9')||evt.getKeyChar()==(char)8)){
             JOptionPane.showMessageDialog(this, "Vui lòng nhập số");
-            String s=sodienthoai.getText();
-            sodienthoai.setText(s.substring(0, s.length()-1));
+            String s=SDT.getText();
+            SDT.setText(s.substring(0, s.length()-1));
         }
-    }//GEN-LAST:event_sodienthoaiKeyReleased
+    }//GEN-LAST:event_SDTKeyReleased
 
-    private void emailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_emailFocusLost
-        String em=email.getText();
+    private void EmailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_EmailFocusLost
+        String em=Email.getText();
         String regex;
         regex="^[a-zA-Z][\\w-]+@([\\w]+\\.[\\w]+|[\\w]+\\.[\\w]{2,}\\.[\\w]{2,})$";
         if(!Pattern.matches(regex, em) && !em.equals("")){
             JOptionPane.showMessageDialog(this, "Nhập đúng định dạng email");
-            email.setText("");
+            Email.setText("");
             return;
         }
-    }//GEN-LAST:event_emailFocusLost
+    }//GEN-LAST:event_EmailFocusLost
 
     private void xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xoaActionPerformed
-        int rp = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nhà cung cấp không?",
-            "Xác nhận", JOptionPane.YES_NO_OPTION);
-        if(rp==JOptionPane.YES_OPTION){
-            String ma= manhacungcap.getText().trim();
-            try {
-                con=ConDB.ketnoiDB();
-                String sql="delete from nhacungcap where mancc='"+ma+"'";
-                Statement st= con.createStatement();
-                st.executeUpdate(sql);
-                con.close();
-                JOptionPane.showMessageDialog(this, "Xóa thông tin nhà cung cấp thành công!");
-                load_ncc();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            manhacungcap.setText("");
-            tennhacungcap.setText("");
-            diachi.setText("");
-            sodienthoai.setText("");
-            email.setText("");
-        }else{
-            return;
+        try {
+            Connection con = ConDB.ketnoiDB();
+            String sql = "DELETE FROM ChiNhanh WHERE Machinhanh=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+
+            pst.setString(1, MaCN.getText());
+
+            pst.executeUpdate();
+            con.close();
+            JOptionPane.showMessageDialog(this, "Xóa chi nhánh thành công!");
+            loadTable(); // Cập nhật bảng sau khi xóa
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi xóa chi nhánh!");
         }
     }//GEN-LAST:event_xoaActionPerformed
 
@@ -369,113 +421,90 @@ public class frmChinhanh extends javax.swing.JFrame {
     }//GEN-LAST:event_thoatActionPerformed
 
     private void nhaplaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhaplaiActionPerformed
-        manhacungcap.setText("");
-        tennhacungcap.setText("");
-        diachi.setText("");
-        sodienthoai.setText("");
-        email.setText("");
-        manhacungcap.setEnabled(true);
+        MaCN.setText("");
+        TenCN.setText("");
+        DiaChi.setText("");
+        SDT.setText("");
+        Email.setText("");
+        MaCN.setEnabled(true);
         them.setEnabled(true);
     }//GEN-LAST:event_nhaplaiActionPerformed
 
-    private void nhapfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhapfileActionPerformed
-        try {
-            JFileChooser fc = new JFileChooser();
-            int lc = fc.showOpenDialog(this);
-            if (lc == JFileChooser.APPROVE_OPTION) {
-                File file = fc.getSelectedFile();
-                String tenfile = file.getName();
-                if (tenfile.endsWith(".xlsx")) {    //endsWith chọn file có phần kết thúc ...
-                    ReadExcel(file.getPath());
-                    JOptionPane.showMessageDialog(this, "import thành công file excel");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Phải chọn file excel");
-                }
-            }
-        } catch (Exception e) {
-        }
-    }//GEN-LAST:event_nhapfileActionPerformed
+    private void InActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InActionPerformed
+        
+    }//GEN-LAST:event_InActionPerformed
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
-        String mancc=manhacungcap.getText().trim();
-        String tenncc=tennhacungcap.getText().trim();
-        String dc=diachi.getText().trim();
-        String em=email.getText().trim();
-        String sdt=sodienthoai.getText().trim();
-        if(mancc.equals("") || tenncc.equals("") || dc.equals("") || em.equals("") || sdt.equals("")){
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ thông tin!");
-            return;
-        }
-        if(!ktratrung(mancc)){
-            JOptionPane.showMessageDialog(this, "Mã nhà cung cấp đã tồn tại");
-            return;
-        }
         try {
-            con=ConDB.ketnoiDB();
-            String sql= "insert into nhacungcap values('"+ mancc +"', N'"+ tenncc +"', N'"+ dc +"', '"+ em +"', '"+ sdt +"')";
-            Statement st= con.createStatement();
-            st.executeUpdate(sql);
+            Connection con = ConDB.ketnoiDB();
+            String sql = "INSERT INTO DoiTac (Machinhanh, Tenchinhanh, Diachi, Email, SDT) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement pst = con.prepareStatement(sql);
+
+            pst.setString(1, MaCN.getText());
+            pst.setString(2, TenCN.getText());
+            pst.setString(3, DiaChi.getText());
+            pst.setString(4, Email.getText());
+            pst.setString(5, SDT.getText());
+
+            pst.executeUpdate();
             con.close();
-            JOptionPane.showMessageDialog(this, "Thêm nhà cung cấp thành công!");
-            load_ncc();
-            manhacungcap.setText("");
-            tennhacungcap.setText("");
-            diachi.setText("");
-            sodienthoai.setText("");
-            email.setText("");
+            JOptionPane.showMessageDialog(this, "Thêm đối tác thành công!");
+            loadTable(); // Cập nhật bảng sau khi thêm
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi thêm đối tác!");
         }
     }//GEN-LAST:event_themActionPerformed
 
     private void suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suaActionPerformed
-        String mancc=manhacungcap.getText().trim();
-        String tenncc=tennhacungcap.getText().trim();
-        String dc=diachi.getText().trim();
-        String em=email.getText().trim();
-        String sdt=sodienthoai.getText().trim();
-        if(mancc.equals("") || tenncc.equals("") || dc.equals("") || em.equals("") || sdt.equals("")){
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ thông tin!");
-            return;
-        }
         try {
-            con=ConDB.ketnoiDB();
-            String sql="update nhacungcap set tenncc=N'"+ tenncc + "', diachi=N'"+dc+"', email='"+em+"', sdt='"+sdt+"' where mancc='"+mancc+"'";
-            Statement st= con.createStatement();
-            st.executeUpdate(sql);
+            Connection con = ConDB.ketnoiDB();
+            String sql = "UPDATE DoiTac SET Tenquangcao=?, Ngaybatdau=?, Ngayketthuc=?, Chiphi=? WHERE Madoitac=?";
+            PreparedStatement pst = con.prepareStatement(sql);
+
+            pst.setString(1, TenCN.getText());
+            pst.setString(2, DiaChi.getText());
+            pst.setString(3, Email.getText());
+            pst.setString(4, SDT.getText());
+            pst.setString(5, MaCN.getText());
+
+            pst.executeUpdate();
             con.close();
-            JOptionPane.showMessageDialog(this, "Sửa thông tin sản phẩm thành công!");
-            load_ncc();
+            JOptionPane.showMessageDialog(this, "Cập nhật đối tác thành công!");
+            loadTable(); // Cập nhật bảng sau khi sửa
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Lỗi khi sửa đối tác!");
         }
     }//GEN-LAST:event_suaActionPerformed
 
-    private void txttiemkiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txttiemkiemKeyReleased
-        String tk=txttiemkiem.getText().trim();
-        try {
-            con=ConDB.ketnoiDB();
-            String sql="select * from nhacungcap where tenncc like N'%"+tk+"%'";
-            Statement st= con.createStatement();
-            ResultSet rs= st.executeQuery(sql);
-            tablencc.removeAll();
-            String[] tdb={"Mã nhà cung cấp", "Tên nhà cung cấp", "Địa chỉ", "Email", "Số điện thoại"};
-            DefaultTableModel model= new DefaultTableModel(tdb, 0);
-            while(rs.next()){
-                Vector v= new Vector();
-                v.add(rs.getString("mancc"));
-                v.add(rs.getString("tenncc"));
-                v.add(rs.getString("diachi"));
-                v.add(rs.getString("email"));
-                v.add(rs.getString("sdt"));
-                model.addRow(v);
-            }
-            tablencc.setModel(model);
-            con.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_txttiemkiemKeyReleased
+    private void TimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TimKiemKeyReleased
+        
+    }//GEN-LAST:event_TimKiemKeyReleased
+
+    private void nhapfile1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhapfile1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_nhapfile1ActionPerformed
+
+    private void MaCNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MaCNActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MaCNActionPerformed
+
+    private void TableCNMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableCNMouseClicked
+        int i = TableCN.getSelectedRow(); 
+        DefaultTableModel model = (DefaultTableModel) TableCN.getModel();
+
+
+        MaCN.setText(model.getValueAt(i, 0).toString()); 
+        TenCN.setText(model.getValueAt(i, 1).toString()); 
+        DiaChi.setText(model.getValueAt(i, 2).toString());
+        Email.setText(model.getValueAt(i, 3).toString());
+        SDT.setText(model.getValueAt(i, 4).toString()); 
+
+        MaCN.setEnabled(false);
+        them.setEnabled(false); 
+        In.setEnabled(false);
+    }//GEN-LAST:event_TableCNMouseClicked
 
     /**
      * @param args the command line arguments
@@ -513,8 +542,14 @@ public class frmChinhanh extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField diachi;
-    private javax.swing.JTextField email;
+    private javax.swing.JTextField DiaChi;
+    private javax.swing.JTextField Email;
+    private javax.swing.JButton In;
+    private javax.swing.JTextField MaCN;
+    private javax.swing.JTextField SDT;
+    private javax.swing.JTable TableCN;
+    private javax.swing.JTextField TenCN;
+    private javax.swing.JTextField TimKiem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -525,16 +560,11 @@ public class frmChinhanh extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField manhacungcap;
-    private javax.swing.JButton nhapfile;
+    private javax.swing.JButton nhapfile1;
     private javax.swing.JButton nhaplai;
-    private javax.swing.JTextField sodienthoai;
     private javax.swing.JButton sua;
-    private javax.swing.JTextField tennhacungcap;
     private javax.swing.JButton them;
     private javax.swing.JButton thoat;
-    private javax.swing.JTextField txttiemkiem;
     private javax.swing.JButton xoa;
     // End of variables declaration//GEN-END:variables
 }
