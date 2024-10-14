@@ -109,13 +109,7 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
     if (ngayban.getDate() != null) {
         try {
             Connection conn = ConDB.ketnoiDB();
-            PreparedStatement ps = conn.prepareStatement(
-                "SELECT SUM(giaban * soluong) AS tongban, SUM(gianhap * soluong) AS tongnhap " +
-                "FROM sanpham WHERE CONVERT(date, ngaynhap) = ?"
-
-            );
-
-
+            PreparedStatement ps = conn.prepareStatement("SELECT SUM(giaban * soluong) AS tongban, SUM(gianhap * soluong) AS tongnhap FROM sanpham WHERE CONVERT(date, ngaynhap) = ?");
             java.sql.Date ngay = new java.sql.Date(ngayban.getDate().getTime());
             ps.setDate(1, ngay);
 
@@ -233,6 +227,11 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         tiennhap.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         tienban.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        tienban.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tienbanActionPerformed(evt);
+            }
+        });
 
         tongtien.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -397,9 +396,9 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         // TODO add your handling code here:
         if (ngayban.getDate() != null) {
         try {
-            // Kết nối đến cơ sở dữ liệu
+            
             Connection conn = ConDB.ketnoiDB();
-            // Chuẩn bị câu lệnh kiểm tra sự tồn tại của ngày bán
+            
             String sqlCheck = "SELECT COUNT(*) AS count FROM ThuChiNhapBan WHERE ngayban = ?";
             PreparedStatement psCheck = conn.prepareStatement(sqlCheck);
             java.sql.Date ngay = new java.sql.Date(ngayban.getDate().getTime());
@@ -407,24 +406,24 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
             
             ResultSet rsCheck = psCheck.executeQuery();
             if (rsCheck.next() && rsCheck.getInt("count") > 0) {
-                // Nếu ngày bán đã tồn tại, hiển thị thông báo
+                
                 JOptionPane.showMessageDialog(this, "Ngày bán hàng này đã tồn tại, không thể thêm!", "Thông báo", JOptionPane.WARNING_MESSAGE);
                 return;
             }
             
-            // Nếu không tồn tại, thêm vào bảng ThuChiNhapBan
+            
             String sqlInsert = "INSERT INTO ThuChiNhapBan (ngayban, tienban, tiennhap, tongdoanhthuthang, tongdoanhthunam) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement psInsert = conn.prepareStatement(sqlInsert);
             psInsert.setDate(1, ngay);
             psInsert.setInt(2, Integer.parseInt(tienban.getText()));
             psInsert.setInt(3, Integer.parseInt(tiennhap.getText()));
-            psInsert.setInt(4, Integer.parseInt(tongtien.getText())); // Doanh thu tháng, có thể tính toán lại nếu cần
-            psInsert.setInt(5, Integer.parseInt(tongtien.getText())); // Doanh thu năm, có thể tính toán lại nếu cần
+            psInsert.setInt(4, Integer.parseInt(tongtien.getText()));
+            psInsert.setInt(5, Integer.parseInt(tongtien.getText())); 
             
             int result = psInsert.executeUpdate();
             if (result > 0) {
                 JOptionPane.showMessageDialog(this, "Thêm thông tin thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                loadThuChhi(); // Cập nhật lại bảng ThuChiNhapBan sau khi thêm thành công
+                loadThuChhi(); 
             }
             
             conn.close();
@@ -445,7 +444,7 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         return;
     }
 
-    // Lấy giá trị mã phiếu từ bảng tablethuchi
+    
     String maPhieu = tablethuchi.getValueAt(selectedRow, 0).toString().trim();
 
     // Kiểm tra xem mã phiếu có tồn tại không
@@ -580,6 +579,10 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         new Dashboard().setVisible(true);
         dispose();
     }//GEN-LAST:event_btexitActionPerformed
+
+    private void tienbanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tienbanActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tienbanActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

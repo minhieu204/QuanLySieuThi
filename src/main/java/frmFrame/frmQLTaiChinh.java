@@ -44,8 +44,6 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
         btlqldt = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         jSeparator4 = new javax.swing.JToolBar.Separator();
-        jSeparator5 = new javax.swing.JToolBar.Separator();
-        jSeparator6 = new javax.swing.JToolBar.Separator();
         jLabel1 = new javax.swing.JLabel();
         pnMain = new javax.swing.JPanel();
 
@@ -97,8 +95,6 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
         jSeparator4.setToolTipText("");
         jSeparator4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jToolBar1.add(jSeparator4);
-        jToolBar1.add(jSeparator5);
-        jToolBar1.add(jSeparator6);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 153, 255));
@@ -188,8 +184,6 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JToolBar.Separator jSeparator5;
-    private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel pnMain;
     // End of variables declaration//GEN-END:variables
