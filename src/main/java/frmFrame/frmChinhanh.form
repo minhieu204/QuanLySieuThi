@@ -292,7 +292,7 @@
                           <Component id="sua" alignment="0" max="32767" attributes="0"/>
                           <Component id="In" alignment="0" min="-2" pref="136" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="nhapfile1" alignment="1" min="-2" pref="136" max="-2" attributes="0"/>
+                      <Component id="nhapfile" alignment="1" min="-2" pref="136" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -308,7 +308,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="xoa" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="nhapfile1" min="-2" max="-2" attributes="0"/>
+                  <Component id="nhapfile" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="In" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -387,7 +387,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="suaActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="nhapfile1">
+        <Component class="javax.swing.JButton" name="nhapfile">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="18" style="1"/>
@@ -395,7 +395,7 @@
             <Property name="text" type="java.lang.String" value="Nh&#x1ead;p file"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nhapfile1ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nhapfileActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
@@ -407,6 +407,7 @@
         </Property>
       </Properties>
       <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TimKiemActionPerformed"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="TimKiemKeyReleased"/>
       </Events>
     </Component>

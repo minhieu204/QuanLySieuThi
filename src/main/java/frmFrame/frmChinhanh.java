@@ -5,16 +5,28 @@
 package frmFrame;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -30,6 +42,7 @@ public class frmChinhanh extends javax.swing.JFrame {
         loadTable();
     }
     
+    Connection con;
     private void loadTable() {
         try {
             Connection con = ConDB.ketnoiDB();
@@ -60,6 +73,48 @@ public class frmChinhanh extends javax.swing.JFrame {
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu!");
+        }
+    }
+    
+    private void themchinhanh(String ma, String ten, String dc, String em, String dt){
+        try {
+            con=ConDB.ketnoiDB();
+            String sql="insert into ChiNhanh values(?,?,?,?,?)";
+            PreparedStatement st=con.prepareStatement(sql);
+            st.setString(1, ma);
+            st.setString(2, ten);
+            st.setString(3, dc);
+            st.setString(4, em);
+            st.setString(5, dt);
+            st.executeUpdate();
+            con.close();
+            loadTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void ReadExcel(String tenfilepath) {
+        try {
+            FileInputStream fis = new FileInputStream(tenfilepath);
+            //Tạo đối tượng Excel
+            XSSFWorkbook wb = new XSSFWorkbook(fis);
+            XSSFSheet sheet = wb.getSheetAt(0); //Lấy sheet đầu tiên của file
+            //Lấy ra các dòng bảng bảng
+            Iterator<Row> itr = sheet.iterator();
+            //Đọc dữ liệu
+            while (itr.hasNext()) {//Lặp đến hết các dòng trong excel
+                Row row = itr.next();//Lấy dòng tiếp theo
+                String ma, ten, dc, em, dt;
+                ma = row.getCell(0).getStringCellValue();
+                ten = row.getCell(1).getStringCellValue();
+                dc = row.getCell(2).getStringCellValue();
+                em = row.getCell(3).getStringCellValue();
+                dt = row.getCell(4).getStringCellValue();
+                themchinhanh(ma, ten, dc, em, dt);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -93,7 +148,7 @@ public class frmChinhanh extends javax.swing.JFrame {
         In = new javax.swing.JButton();
         them = new javax.swing.JButton();
         sua = new javax.swing.JButton();
-        nhapfile1 = new javax.swing.JButton();
+        nhapfile = new javax.swing.JButton();
         TimKiem = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
 
@@ -269,11 +324,11 @@ public class frmChinhanh extends javax.swing.JFrame {
             }
         });
 
-        nhapfile1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        nhapfile1.setText("Nhập file");
-        nhapfile1.addActionListener(new java.awt.event.ActionListener() {
+        nhapfile.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        nhapfile.setText("Nhập file");
+        nhapfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nhapfile1ActionPerformed(evt);
+                nhapfileActionPerformed(evt);
             }
         });
 
@@ -291,7 +346,7 @@ public class frmChinhanh extends javax.swing.JFrame {
                         .addComponent(nhaplai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(sua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(In, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(nhapfile1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nhapfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -304,7 +359,7 @@ public class frmChinhanh extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(xoa)
                 .addGap(18, 18, 18)
-                .addComponent(nhapfile1)
+                .addComponent(nhapfile)
                 .addGap(18, 18, 18)
                 .addComponent(In)
                 .addGap(18, 18, 18)
@@ -315,6 +370,11 @@ public class frmChinhanh extends javax.swing.JFrame {
         );
 
         TimKiem.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        TimKiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TimKiemActionPerformed(evt);
+            }
+        });
         TimKiem.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 TimKiemKeyReleased(evt);
@@ -428,16 +488,85 @@ public class frmChinhanh extends javax.swing.JFrame {
         Email.setText("");
         MaCN.setEnabled(true);
         them.setEnabled(true);
+        In.setEnabled(true);
     }//GEN-LAST:event_nhaplaiActionPerformed
 
     private void InActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_InActionPerformed
-        
+        try {
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet spreadsheet = workbook.createSheet("ChiNhanh");
+
+            XSSFRow row = null;
+            Cell cell = null;
+
+            row = spreadsheet.createRow(0);
+            cell = row.createCell(0, CellType.STRING);
+            cell.setCellValue("DANH SÁCH CHI NHÁNH");
+
+            row = spreadsheet.createRow(1);
+            row.setHeight((short) 500);
+            cell = row.createCell(0, CellType.STRING);
+            cell.setCellValue("STT");
+            cell = row.createCell(1, CellType.STRING);
+            cell.setCellValue("Mã chi nhánh");
+            cell = row.createCell(2, CellType.STRING);
+            cell.setCellValue("Tên chi nhánh");
+            cell = row.createCell(3, CellType.STRING);
+            cell.setCellValue("Dịa chỉ");
+            cell = row.createCell(4, CellType.STRING);
+            cell.setCellValue("Email");
+            cell = row.createCell(5, CellType.STRING);
+            cell.setCellValue("Số điện thoại");
+
+            Connection con = ConDB.ketnoiDB();
+            String sql = "SELECT * FROM ChiNhanh";
+            PreparedStatement st = con.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+
+            int i = 0;
+            while (rs.next()) {
+                row = spreadsheet.createRow(2 + i);
+                row.setHeight((short) 400);
+
+                row.createCell(0).setCellValue(i + 1); 
+                row.createCell(1).setCellValue(rs.getString("Machinhanh"));
+                row.createCell(2).setCellValue(rs.getString("Tenchinhanh"));
+                row.createCell(3).setCellValue(rs.getString("Diachi"));
+                row.createCell(4).setCellValue(rs.getString("Email"));
+                row.createCell(5).setCellValue(rs.getInt("SDT"));
+
+                i++;
+            }
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Lưu file Excel");
+
+            int userSelection = fileChooser.showSaveDialog(null);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                String filePath = fileToSave.getAbsolutePath();
+                if (!filePath.endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+                FileOutputStream fileOut = new FileOutputStream(filePath);
+                workbook.write(fileOut);
+                fileOut.close();
+                JOptionPane.showMessageDialog(this, "Xuất dữ liệu ra Excel thành công!");
+            }
+
+            rs.close();
+            st.close();
+            con.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Lỗi khi xuất dữ liệu ra Excel.");
+        }
     }//GEN-LAST:event_InActionPerformed
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
         try {
             Connection con = ConDB.ketnoiDB();
-            String sql = "INSERT INTO DoiTac (Machinhanh, Tenchinhanh, Diachi, Email, SDT) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO ChiNhanh (Machinhanh, Tenchinhanh, Diachi, Email, SDT) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setString(1, MaCN.getText());
@@ -448,18 +577,18 @@ public class frmChinhanh extends javax.swing.JFrame {
 
             pst.executeUpdate();
             con.close();
-            JOptionPane.showMessageDialog(this, "Thêm đối tác thành công!");
+            JOptionPane.showMessageDialog(this, "Thêm chi nhánh thành công!");
             loadTable(); // Cập nhật bảng sau khi thêm
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi thêm đối tác!");
+            JOptionPane.showMessageDialog(null, "Lỗi khi thêm chi nhánh!");
         }
     }//GEN-LAST:event_themActionPerformed
 
     private void suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suaActionPerformed
         try {
             Connection con = ConDB.ketnoiDB();
-            String sql = "UPDATE DoiTac SET Tenquangcao=?, Ngaybatdau=?, Ngayketthuc=?, Chiphi=? WHERE Madoitac=?";
+            String sql = "UPDATE ChiNhanh SET Tenchinhanh=?, Diachi=?, Email=?, SDT=? WHERE Machinhanh=?";
             PreparedStatement pst = con.prepareStatement(sql);
 
             pst.setString(1, TenCN.getText());
@@ -470,21 +599,61 @@ public class frmChinhanh extends javax.swing.JFrame {
 
             pst.executeUpdate();
             con.close();
-            JOptionPane.showMessageDialog(this, "Cập nhật đối tác thành công!");
+            JOptionPane.showMessageDialog(this, "Cập nhật chi nhánh thành công!");
             loadTable(); // Cập nhật bảng sau khi sửa
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi sửa đối tác!");
+            JOptionPane.showMessageDialog(null, "Lỗi khi sửa chi nhánh!");
         }
     }//GEN-LAST:event_suaActionPerformed
 
     private void TimKiemKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TimKiemKeyReleased
-        
+        String tk=TimKiem.getText().trim();
+          try {
+            con=ConDB.ketnoiDB();
+            Statement st=con.createStatement();
+            Statement st2= con.createStatement();
+            
+            
+            String sql="Select * from ChiNhanh where Tenchinhanh like N'%"+tk+"%'";
+            ResultSet rs= st.executeQuery(sql);
+            TableCN.removeAll();
+            String[] tdb={"Mã chi nhánh", "Tên chi nhánh", "Địa chỉ", "Email", "Điện thoại"};
+            DefaultTableModel model= new DefaultTableModel(tdb, 0);
+            while(rs.next()){
+                Vector v= new Vector();
+                v.add(rs.getString("Machinhanh"));
+                v.add(rs.getString("Tenchinhanh"));
+                v.add(rs.getString("Diachi"));
+                v.add(rs.getString("Email"));
+                v.add(rs.getString("SDT"));
+                model.addRow(v);
+            }
+            
+            TableCN.setModel(model);
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_TimKiemKeyReleased
 
-    private void nhapfile1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhapfile1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nhapfile1ActionPerformed
+    private void nhapfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhapfileActionPerformed
+         try {
+            JFileChooser fc = new JFileChooser();
+            int lc = fc.showOpenDialog(this);
+            if (lc == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String tenfile = file.getName();
+                if (tenfile.endsWith(".xlsx")) {    //endsWith chọn file có phần kết thúc ...
+                    ReadExcel(file.getPath());
+                    JOptionPane.showMessageDialog(this, "import thành công file excel");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Phải chọn file excel");
+                }
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_nhapfileActionPerformed
 
     private void MaCNActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MaCNActionPerformed
         // TODO add your handling code here:
@@ -505,6 +674,10 @@ public class frmChinhanh extends javax.swing.JFrame {
         them.setEnabled(false); 
         In.setEnabled(false);
     }//GEN-LAST:event_TableCNMouseClicked
+
+    private void TimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TimKiemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TimKiemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -560,7 +733,7 @@ public class frmChinhanh extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JButton nhapfile1;
+    private javax.swing.JButton nhapfile;
     private javax.swing.JButton nhaplai;
     private javax.swing.JButton sua;
     private javax.swing.JButton them;
