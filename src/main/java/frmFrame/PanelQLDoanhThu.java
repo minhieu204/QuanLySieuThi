@@ -9,7 +9,9 @@ import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Vector;
 import javax.swing.JFileChooser;
@@ -40,6 +42,9 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         tienban.setEnabled(false);
         tiennhap.setEnabled(false);
         tongtien.setEnabled(false);
+        tienthang.setEnabled(false);
+        tiennam.setEnabled(false);
+        
     }
     private void loadSanPham() {
         try {
@@ -83,7 +88,7 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
 
         tablethuchi.removeAll();
 
-        String[] tieuDeBang = {"Mã phiếu", "Ngày bán", "Tiền bán", "Tiền nhập", "Doanh thu tháng", "Doanh thu năm"};
+        String[] tieuDeBang = {"Mã phiếu", "Ngày bán", "Tiền bán", "Tiền nhập ", "Tổng"};
         DefaultTableModel model = new DefaultTableModel(tieuDeBang, 0);
 
         while (rs.next()) {
@@ -92,8 +97,7 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
             v.add(rs.getDate("ngayban")); 
             v.add(rs.getInt("tienban")); 
             v.add(rs.getInt("tiennhap")); 
-            v.add(rs.getInt("tongdoanhthuthang"));
-            v.add(rs.getInt("tongdoanhthunam"));
+            v.add(rs.getInt("tongtien"));
             model.addRow(v);
         }
 
@@ -126,9 +130,125 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         }
     }
 }
+   
+   
+private void updateTongTienThang(java.sql.Date ngayban) {
+    try {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.setTime(ngayban);
+        int month = cal.get(java.util.Calendar.MONTH) + 1; // Tháng (1-12)
+        int year = cal.get(java.util.Calendar.YEAR); // Năm
+
+        String sqlTongTienThang = "SELECT SUM(tongtien) AS tongtien FROM ThuChiNhapBan WHERE MONTH(ngayban) = ? AND YEAR(ngayban) = ?";
+        Connection conn = ConDB.ketnoiDB();
+        PreparedStatement ps = conn.prepareStatement(sqlTongTienThang);
+        ps.setInt(1, month);
+        ps.setInt(2, year);
+        
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            int tongtienThang = rs.getInt("tongtien");
+            // Nếu không có bản ghi nào, mặc định là 0
+            tongtienThang = (rs.wasNull()) ? 0 : tongtienThang; 
+            tienthang.setText(String.valueOf(tongtienThang)); // Cập nhật ô hiển thị tổng tiền tháng
+        }
+
+        rs.close();
+        ps.close();
+        conn.close();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi tính tổng tiền tháng: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+private void tinhDoanhThuNam() {
+    if (ngayban.getDate() != null) {
+        try {
+            Connection conn = ConDB.ketnoiDB();
+            
+            // Lấy năm từ ngày bán
+            java.util.Calendar cal = ngayban.getCalendar();
+            int year = cal.get(java.util.Calendar.YEAR); // Lấy năm
+            
+            // Tính tổng doanh thu bán trong năm theo tháng
+            String sqlTongDoanhThuNam = "SELECT MONTH(ngayban) AS thang, SUM(tongtien) AS tongtien " +
+                                          "FROM ThuChiNhapBan " +
+                                          "WHERE YEAR(ngayban) = ? " +
+                                          "GROUP BY MONTH(ngayban)";
+            PreparedStatement ps = conn.prepareStatement(sqlTongDoanhThuNam);
+            ps.setInt(1, year);
+            
+            ResultSet rs = ps.executeQuery();
+            int tongDoanhThuNam = 0;
+
+            while (rs.next()) {
+                int tongtienThang = rs.getInt("tongtien");
+                tongDoanhThuNam += tongtienThang; // Cộng dồn doanh thu theo tháng
+            }
+
+            // Cập nhật ô hiển thị tổng doanh thu năm
+            tiennam.setText(String.valueOf(tongDoanhThuNam));
+
+            rs.close();
+            ps.close();
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi tính tổng doanh thu năm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+}
 
 
+private void updateTongTienNam(int year) {
+    try {
+        // Tính tổng tiền bán cho năm này
+        String sqlTongTienNam = "SELECT SUM(tongtien) AS tongtien FROM ThuChiNhapBan WHERE YEAR(ngayban) = ?";
+        Connection conn = ConDB.ketnoiDB();
+        PreparedStatement ps = conn.prepareStatement(sqlTongTienNam);
+        ps.setInt(1, year);
+        ResultSet rs = ps.executeQuery();
 
+        if (rs.next()) {
+            int tongtienNam = rs.getInt("tongtien");
+            tiennam.setText(String.valueOf(tongtienNam)); // Cập nhật ô hiển thị tổng tiền năm
+        } else {
+            tiennam.setText("0"); // Nếu không có bản ghi nào, hiển thị 0
+        }
+
+        rs.close();
+        ps.close();
+        conn.close();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi tính tổng tiền năm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+private void addRecord(java.sql.Date ngayban, int tienban, int tiennhap) {
+    try {
+        // Thêm bản ghi vào bảng
+        String sqlInsert = "INSERT INTO ThuChiNhapBan (ngayban, tienban, tiennhap, tongtien) VALUES (?, ?, ?, ?)";
+        Connection conn = ConDB.ketnoiDB();
+        PreparedStatement ps = conn.prepareStatement(sqlInsert);
+        
+        // Tính tổng tiền
+        int tongtien = tienban - tiennhap; // Điều chỉnh theo cách bạn tính tổng tiền
+        ps.setDate(1, ngayban);
+        ps.setInt(2, tienban);
+        ps.setInt(3, tiennhap);
+        ps.setInt(4, tongtien);
+        
+        ps.executeUpdate();
+        ps.close();
+        
+        // Cập nhật tổng tiền tháng và tổng tiền năm
+        updateTongTienThang(ngayban); // Gọi hàm tính tổng tiền tháng
+        tinhDoanhThuNam(); // Gọi hàm tính tổng doanh thu năm
+
+        JOptionPane.showMessageDialog(this, "Thêm bản ghi thành công!");
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Lỗi khi thêm bản ghi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -160,6 +280,10 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         in = new javax.swing.JButton();
         ngayban = new com.toedter.calendar.JDateChooser();
         jLabel6 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        tienthang = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        tiennam = new javax.swing.JTextField();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Danh sách mặt hàng", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
 
@@ -180,11 +304,11 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE)
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thu Chi nhập bán", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
@@ -210,7 +334,7 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tác vụ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
@@ -245,6 +369,11 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
 
         btedit.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btedit.setText("Sửa");
+        btedit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bteditActionPerformed(evt);
+            }
+        });
 
         btdelete.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btdelete.setText("Xóa");
@@ -321,7 +450,7 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ngayban, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -337,7 +466,7 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(tongtien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(50, 50, 50)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(in, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -350,9 +479,18 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
                     .addComponent(btdelete)
                     .addComponent(btexit))
                 .addGap(45, 45, 45)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel4.setText("Tổng Tiền Tháng : ");
+
+        tienthang.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel5.setText("Tổng Tiền Năm : ");
+
+        tiennam.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -362,7 +500,17 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tienthang, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tiennam, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(71, 71, 71)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6))
@@ -372,12 +520,18 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(tienthang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addComponent(tiennam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(165, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -412,18 +566,18 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
             }
             
             
-            String sqlInsert = "INSERT INTO ThuChiNhapBan (ngayban, tienban, tiennhap, tongdoanhthuthang, tongdoanhthunam) VALUES (?, ?, ?, ?, ?)";
+            String sqlInsert = "INSERT INTO ThuChiNhapBan (ngayban, tienban, tiennhap ,tongtien) VALUES (?, ?, ?,?)";
             PreparedStatement psInsert = conn.prepareStatement(sqlInsert);
             psInsert.setDate(1, ngay);
             psInsert.setInt(2, Integer.parseInt(tienban.getText()));
             psInsert.setInt(3, Integer.parseInt(tiennhap.getText()));
             psInsert.setInt(4, Integer.parseInt(tongtien.getText()));
-            psInsert.setInt(5, Integer.parseInt(tongtien.getText())); 
-            
             int result = psInsert.executeUpdate();
             if (result > 0) {
                 JOptionPane.showMessageDialog(this, "Thêm thông tin thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 loadThuChhi(); 
+                updateTongTienThang(ngay);
+                updateTongTienNam(ngay.getYear() + 1900);
             }
             
             conn.close();
@@ -584,6 +738,10 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_tienbanActionPerformed
 
+    private void bteditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bteditActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bteditActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btadd;
@@ -594,6 +752,8 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -606,7 +766,9 @@ public class PanelQLDoanhThu extends javax.swing.JPanel {
     private javax.swing.JTable tablemh;
     private javax.swing.JTable tablethuchi;
     private javax.swing.JTextField tienban;
+    private javax.swing.JTextField tiennam;
     private javax.swing.JTextField tiennhap;
+    private javax.swing.JTextField tienthang;
     private javax.swing.JTextField tongtien;
     // End of variables declaration//GEN-END:variables
 

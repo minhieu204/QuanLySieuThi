@@ -39,6 +39,8 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         datee.addPropertyChangeListener("date", evt -> {tinhDoanhThuNgay();});
         luongnhanvien.setEnabled(false);
         tienquangcao.setEnabled(false);
+        tiennam.setEnabled(false);
+        tienthang.setEnabled(false); 
     }
 
     /**
@@ -55,7 +57,7 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         String sql = "SELECT * FROM ChiPhi";
         ResultSet rs = st.executeQuery(sql);
 
-        DefaultTableModel model = new DefaultTableModel(new String[]{"Mã Hóa Đơn", "Ngày", "Lương Nân Viên", "Tiền Mặt Bằng", "Tiền Điện", "Tiền Nước", "Tiền Quảng Cáo", "Tiền Sửa Chữa ","Tháng","Năm"}, 0);
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Mã Hóa Đơn", "Ngày", "Lương Nân Viên", "Tiền Mặt Bằng", "Tiền Điện", "Tiền Nước", "Tiền Quảng Cáo", "Tiền Sửa Chữa "}, 0);
 
         while (rs.next()) {
             Vector<Object> v = new Vector<>();
@@ -67,8 +69,6 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             v.add(rs.getInt("nuoc"));
             v.add(rs.getInt("quangcao"));
             v.add(rs.getInt("suachua")); 
-            v.add(rs.getInt("thang"));
-            v.add(rs.getInt("nam"));
             model.addRow(v);
         }
 
@@ -110,23 +110,48 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         }
     }
 }
-    private void doanhthuthangnam() {
-    if (datee.getDate() != null) {
-        try {
+    
+    private void tinhDoanhThuTheoThang() {
+    try {
             Connection conn = ConDB.ketnoiDB();
-            PreparedStatement ps = conn.prepareStatement("SELECT SUM(tienban) AS tongBan, SUM(tiennhap) AS tongNhap FROM ThuChiNhapBan WHERE MONTH(ngayban) = MONTH(CURRENT_DATE) AND YEAR(ngayban) = YEAR(CURRENT_DATE)");
-            
-            java.sql.Date ngay = new java.sql.Date(datee.getDate().getTime());
-            ps.setDate(1, ngay);
+            java.util.Calendar cal = java.util.Calendar.getInstance(); 
+            int month = cal.get(java.util.Calendar.MONTH) + 1; 
+            int year = cal.get(java.util.Calendar.YEAR); 
+
+            PreparedStatement ps = conn.prepareStatement("SELECT (SUM(luongNV) + SUM(matbang) + SUM(dien) + SUM(nuoc) + SUM(quangcao) + SUM(suachua)) AS tongchi FROM ChiPhi WHERE MONTH(ngay) = ? AND YEAR(ngay) = ?");
+
+            ps.setInt(1, month);
+            ps.setInt(2, year);
 
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-               luongnhanvien.setText(String.valueOf(rs.getInt("tongluong")));
+                tienthang.setText(String.valueOf(rs.getDouble("tongchi")));
             }
+
             conn.close();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    private void tinhDoanhThuTheoNam() {
+    try {
+        Connection conn = ConDB.ketnoiDB();
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        int year = cal.get(java.util.Calendar.YEAR);
+
+        PreparedStatement ps = conn.prepareStatement("SELECT (SUM(luongNV) + SUM(matbang) + SUM(dien) + SUM(nuoc) + SUM(quangcao) + SUM(suachua)) AS tongchi FROM ChiPhi WHERE YEAR(ngay) = ?");
+        
+        ps.setInt(1, year);
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            tiennam.setText(String.valueOf(rs.getDouble("tongchi")));
+        }
+
+        conn.close();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
 }
 
@@ -159,6 +184,10 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         thoat = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
         bttk = new javax.swing.JButton();
+        jLabel8 = new javax.swing.JLabel();
+        tienthang = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        tiennam = new javax.swing.JTextField();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông Tin Chi Phí", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
 
@@ -228,20 +257,20 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
                             .addComponent(tienquangcao)
                             .addComponent(phisuachua, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(230, 230, 230)
+                        .addGap(108, 108, 108)
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(datee, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(74, Short.MAX_VALUE))
+                        .addComponent(datee, javax.swing.GroupLayout.PREFERRED_SIZE, 416, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(datee, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
+                    .addComponent(datee, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(tienmatbang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -371,8 +400,18 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
                 .addComponent(thoat)
                 .addGap(18, 18, 18)
                 .addComponent(bttk)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel8.setText("Tổng Chi Phí Tháng : ");
+
+        tienthang.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel9.setText("Tổng Chi Phí Năm : ");
+
+        tiennam.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -381,30 +420,46 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(115, 115, 115)
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tienthang, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tiennam, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(105, 105, 105)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(tienthang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addComponent(tiennam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
        try {
         Connection con = ConDB.ketnoiDB();
-        PreparedStatement ps = con.prepareStatement("INSERT INTO ChiPhi (ngay, luongNV, matbang, dien, nuoc, quangcao, suachua, thang, nam) VALUES (?, ?, ?, ?, ?, ?,?,?,?)");
+        PreparedStatement ps = con.prepareStatement("INSERT INTO ChiPhi (ngay, luongNV, matbang, dien, nuoc, quangcao, suachua) VALUES (?, ?, ?, ?, ?, ?,?)");
         
         java.sql.Date ngay = new java.sql.Date(datee.getDate().getTime());
         ps.setDate(1, ngay);
@@ -414,11 +469,11 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         ps.setInt(5, Integer.parseInt(tiennuoc.getText()));
         ps.setInt(6, Integer.parseInt(tienquangcao.getText()));
         ps.setInt(7, Integer.parseInt(phisuachua.getText()));
-        ps.setInt(8, Integer.parseInt(phisuachua.getText()));
-        ps.setInt(9, Integer.parseInt(phisuachua.getText()));
         ps.executeUpdate();
         JOptionPane.showMessageDialog(this, "Thêm thành công!");
-        loadTable(); 
+        loadTable();
+        tinhDoanhThuTheoThang();
+        tinhDoanhThuTheoNam();
         con.close();
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Lỗi khi thêm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -641,6 +696,8 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -653,8 +710,10 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
     private javax.swing.JButton thoat;
     private javax.swing.JTextField tiendien;
     private javax.swing.JTextField tienmatbang;
+    private javax.swing.JTextField tiennam;
     private javax.swing.JTextField tiennuoc;
     private javax.swing.JTextField tienquangcao;
+    private javax.swing.JTextField tienthang;
     private javax.swing.JButton xoa;
     // End of variables declaration//GEN-END:variables
 

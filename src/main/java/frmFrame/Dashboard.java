@@ -7,10 +7,14 @@ package frmFrame;
 import java.awt.Color;
 import java.awt.Font;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -37,8 +41,9 @@ public class Dashboard extends javax.swing.JFrame {
         hd1.setEnabled(false);
         hd2.setEnabled(false);
         hd3.setEnabled(false);
-        hd4.setEnabled(false);
-        hd5.setEnabled(false);
+        tongdonhang();
+        tinhTongLuongTheoThang();
+        tinhTongLuongTheoNam();
     }
      private void loadSanPham() {
         try {
@@ -94,6 +99,72 @@ public class Dashboard extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+     
+      private void tongdonhang() {
+        try {
+            Connection conn = ConDB.ketnoiDB();
+            String sql = "SELECT COUNT(*) AS tongtien FROM donhang";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                int total = rs.getInt("tongtien");
+                hd1.setText(String.valueOf(total));
+            }
+
+            rs.close();
+            ps.close();
+            conn.close();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void tinhTongLuongTheoThang() {
+        try {
+            Connection conn = ConDB.ketnoiDB();
+            java.util.Calendar cal = java.util.Calendar.getInstance(); 
+            int month = cal.get(java.util.Calendar.MONTH) + 1; 
+            int year = cal.get(java.util.Calendar.YEAR); 
+
+            PreparedStatement ps = conn.prepareStatement(
+                "SELECT SUM(tienduocnhan) AS tongluong FROM luong WHERE MONTH(ngaynhan) = ? AND YEAR(ngaynhan) = ?");
+
+            ps.setInt(1, month);
+            ps.setInt(2, year);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                hd2.setText(String.valueOf(rs.getDouble("tongluong")));
+            }
+
+            conn.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void tinhTongLuongTheoNam() {
+    try {
+        Connection conn = ConDB.ketnoiDB();
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        int year = cal.get(java.util.Calendar.YEAR);
+
+        PreparedStatement ps = conn.prepareStatement(
+            "SELECT SUM(tienduocnhan) AS tongluong FROM luong WHERE YEAR(ngaynhan) = ?");
+        
+        ps.setInt(1, year);
+
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            hd3.setText(String.valueOf(rs.getDouble("tongluong")));
+        }
+
+        conn.close();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -145,10 +216,6 @@ public class Dashboard extends javax.swing.JFrame {
         hd2 = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
         hd3 = new javax.swing.JTextField();
-        jLabel18 = new javax.swing.JLabel();
-        hd4 = new javax.swing.JTextField();
-        jLabel19 = new javax.swing.JLabel();
-        hd5 = new javax.swing.JTextField();
         jPanel16 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabletmh = new javax.swing.JTable();
@@ -606,16 +673,6 @@ public class Dashboard extends javax.swing.JFrame {
             }
         });
 
-        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel18.setText("Nhập Hàng Tháng :");
-
-        hd4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        jLabel19.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel19.setText("Nhập Hàng Năm :");
-
-        hd5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
         javax.swing.GroupLayout jPanel15Layout = new javax.swing.GroupLayout(jPanel15);
         jPanel15.setLayout(jPanel15Layout);
         jPanel15Layout.setHorizontalGroup(
@@ -628,37 +685,25 @@ public class Dashboard extends javax.swing.JFrame {
                     .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(hd3)
                     .addComponent(hd2)
-                    .addComponent(hd1, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel18, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(hd4)
-                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(hd5))
-                .addContainerGap(30, Short.MAX_VALUE))
+                    .addComponent(hd1, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         jPanel15Layout.setVerticalGroup(
             jPanel15Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel15Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(20, 20, 20)
                 .addComponent(hda1)
                 .addGap(15, 15, 15)
                 .addComponent(hd1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addGap(35, 35, 35)
                 .addComponent(jLabel16)
                 .addGap(15, 15, 15)
                 .addComponent(hd2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addGap(35, 35, 35)
                 .addComponent(jLabel17)
                 .addGap(15, 15, 15)
                 .addComponent(hd3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
-                .addComponent(jLabel18)
-                .addGap(15, 15, 15)
-                .addComponent(hd4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
-                .addComponent(jLabel19)
-                .addGap(15, 15, 15)
-                .addComponent(hd5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(205, Short.MAX_VALUE))
+                .addContainerGap(365, Short.MAX_VALUE))
         );
 
         panelmain.add(jPanel15, java.awt.BorderLayout.CENTER);
@@ -958,6 +1003,7 @@ public class Dashboard extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Dashboard().setVisible(true);
+                SwingUtilities.invokeLater(() -> new Dashboard());
             }
         });
     }
@@ -968,8 +1014,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JTextField hd1;
     private javax.swing.JTextField hd2;
     private javax.swing.JTextField hd3;
-    private javax.swing.JTextField hd4;
-    private javax.swing.JTextField hd5;
     private javax.swing.JLabel hda1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -979,8 +1023,6 @@ public class Dashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

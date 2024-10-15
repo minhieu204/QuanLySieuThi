@@ -284,11 +284,11 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="them" alignment="0" pref="136" max="32767" attributes="0"/>
-                      <Component id="xoa" alignment="0" pref="136" max="32767" attributes="0"/>
-                      <Component id="thoat" alignment="0" pref="136" max="32767" attributes="0"/>
-                      <Component id="nhaplai" alignment="0" pref="136" max="32767" attributes="0"/>
-                      <Component id="sua" alignment="0" pref="136" max="32767" attributes="0"/>
+                      <Component id="them" alignment="0" max="32767" attributes="0"/>
+                      <Component id="xoa" alignment="0" max="32767" attributes="0"/>
+                      <Component id="thoat" alignment="0" max="32767" attributes="0"/>
+                      <Component id="nhaplai" alignment="0" max="32767" attributes="0"/>
+                      <Component id="sua" alignment="0" max="32767" attributes="0"/>
                       <Component id="nhapfile" alignment="0" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace pref="12" max="32767" attributes="0"/>

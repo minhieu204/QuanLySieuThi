@@ -5,6 +5,7 @@
 package frmFrame;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.Date;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -20,6 +22,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -38,7 +41,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         loadTable();
         loadMaSanPham();
     }
-
      private void loadTable() {
     try {
         Connection con = ConDB.ketnoiDB();
@@ -60,7 +62,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
             v.add(rs.getString("MaSanPham"));
             v.add(rs.getDate("NgayBatDau").toString());
             v.add(rs.getDate("NgayKetThuc").toString());
-            v.add(rs.getInt("GiamGia")+"%");
+            v.add(rs.getInt("GiamGia"));
             v.add(rs.getInt("GiaGoc"));
 
            
@@ -82,6 +84,79 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu!");
     }
 }
+     
+     
+      private void ReadExcel(String path) {
+    try {
+        FileInputStream fis = new FileInputStream(path);
+        XSSFWorkbook wb = new XSSFWorkbook(fis);
+        XSSFSheet sheet = wb.getSheetAt(0); // Lấy sheet đầu tiên của file
+        Iterator<Row> itr = sheet.iterator();
+
+        while (itr.hasNext()) { // Lặp qua từng dòng trong excel
+            Row row = itr.next(); // Lấy dòng tiếp theo
+
+            // Lấy giá trị ô bằng phương thức getCellValueAsString()
+            String MaKhuyenMai = getCellValueAsString(row.getCell(0));
+            String TenKhuyenMai = getCellValueAsString(row.getCell(1));
+            String NgayBatDau = getCellValueAsString(row.getCell(2));
+            String NgayKetThuc = getCellValueAsString(row.getCell(3));
+            String MaSanPham = getCellValueAsString(row.getCell(4));
+            
+            // Kiểm tra giá trị trước khi chuyển đổi
+            String giamGiaStr = getCellValueAsString(row.getCell(5));
+            String giaSauGiamStr = getCellValueAsString(row.getCell(6));
+            String giaGocStr = getCellValueAsString(row.getCell(7));
+
+            int GiamGia = giamGiaStr.isEmpty() ? 0 : Integer.parseInt(giamGiaStr); // Gán 0 nếu chuỗi rỗng
+            int GiaSauGiam = giaSauGiamStr.isEmpty() ? 0 : Integer.parseInt(giaSauGiamStr);
+            int GiaGoc = giaGocStr.isEmpty() ? 0 : Integer.parseInt(giaGocStr);
+
+            themkhuyenmai(MaKhuyenMai, TenKhuyenMai, NgayBatDau, NgayKetThuc, MaSanPham, GiamGia, GiaSauGiam, GiaGoc);
+        }
+
+        wb.close();
+        fis.close();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+
+      private String getCellValueAsString(Cell cell) {
+    if (cell == null) {
+        return ""; // Trả về chuỗi rỗng nếu ô là null
+    }
+    switch (cell.getCellType()) {
+        case STRING:
+            return cell.getStringCellValue();
+        case NUMERIC:
+            return String.valueOf((int) cell.getNumericCellValue()); // Nếu là số, chuyển thành chuỗi
+        case BOOLEAN:
+            return String.valueOf(cell.getBooleanCellValue()); // Nếu là kiểu boolean, chuyển thành chuỗi
+        default:
+            return ""; // Trường hợp ô có kiểu khác, trả về chuỗi rỗng
+    }
+}
+    private void themkhuyenmai(String MaKhuyenMai, String TenKhuyenMai, String NgayBatDau, String NgayKetThuc, String MaSanPham , int GiamGia ,int GiaSauGiam, int GiaGoc){
+        try {
+            Connection con = ConDB.ketnoiDB();
+            String sql="insert into KhuyenMai values(?,?,?,?,?,?,?,?)";
+            PreparedStatement st=con.prepareStatement(sql);
+            st.setString(1, MaKhuyenMai);
+            st.setString(2, TenKhuyenMai);
+            st.setString(3, NgayBatDau);
+            st.setString(4, NgayKetThuc);
+            st.setString(5, MaSanPham);
+            st.setInt(6, GiamGia);
+            st.setInt(7, GiaSauGiam);
+            st.setInt(8, GiaGoc);
+            st.executeUpdate();
+            con.close();
+            loadTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
@@ -143,16 +218,19 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         in = new javax.swing.JButton();
         thoat = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
-        bttk = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         txttk = new javax.swing.JTextField();
+        bttk = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
 
         jLabel9.setText("jLabel9");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1024, 768));
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 153, 255));
@@ -237,7 +315,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                     .addComponent(jLabel7))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ngbd, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                    .addComponent(ngbd, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
                     .addComponent(ngkt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ptgiam))
                 .addContainerGap())
@@ -321,11 +399,11 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
             }
         });
 
-        bttk.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        bttk.setText("Tìm kiếm");
-        bttk.addActionListener(new java.awt.event.ActionListener() {
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButton1.setText("Nhập file");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bttkActionPerformed(evt);
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -342,7 +420,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                     .addComponent(in, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                     .addComponent(thoat, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                     .addComponent(nhaplai, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
-                    .addComponent(bttk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -361,8 +439,8 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addComponent(thoat)
                 .addGap(23, 23, 23)
-                .addComponent(bttk)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addComponent(jButton1)
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Tìm kiếm", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 18))); // NOI18N
@@ -378,6 +456,14 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
             }
         });
 
+        bttk.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        bttk.setText("Tìm kiếm");
+        bttk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bttkActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -386,16 +472,19 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txttk)
+                .addComponent(txttk, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(bttk, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
+                .addGap(2, 2, 2)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(txttk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txttk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bttk))
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
@@ -448,11 +537,12 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        pack();
+        setSize(new java.awt.Dimension(1024, 768));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
@@ -864,6 +954,27 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_inActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            JFileChooser fc = new JFileChooser();
+            int lc = fc.showOpenDialog(this);
+            if (lc == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                String tenfile = file.getAbsolutePath();
+                if (tenfile.endsWith(".xlsx")) {    
+                    ReadExcel(file.getPath());
+                    JOptionPane.showMessageDialog(this, "import thành công file excel");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Phải chọn file excel");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();  
+            JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi import file Excel: " + e.getMessage());
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -902,6 +1013,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bttk;
     private javax.swing.JButton in;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -929,4 +1041,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     private javax.swing.JTextField txttk;
     private javax.swing.JButton xoa;
     // End of variables declaration//GEN-END:variables
+
+   
 }
