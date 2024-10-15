@@ -5,6 +5,7 @@
 package frmFrame;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.Date;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -20,6 +22,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -38,7 +41,7 @@ public class frmDoitac extends javax.swing.JFrame {
         loadTable();
     }
 
-    
+    Connection con;
          private void loadTable() {
     try {
         Connection con = ConDB.ketnoiDB();
@@ -75,6 +78,50 @@ public class frmDoitac extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu!");
     }
 }
+         
+         private void themdoitac(String ma, String ten, Date nbd, Date nkt, String cp){
+        try {
+            con = ConDB.ketnoiDB();
+            String sql="insert into DoiTac values(?,?,?,?,?)";
+            PreparedStatement st=con.prepareStatement(sql);
+            st.setString(1, ma);
+            st.setString(2, ten);
+            st.setDate(3, new java.sql.Date(nbd.getTime()));
+            st.setDate(4, new java.sql.Date(nkt.getTime()));
+            st.setString(5, cp);
+            st.executeUpdate();
+            con.close();
+            loadTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+         
+         
+        private void ReadExcel(String tenfilepath) {
+            try {
+                FileInputStream fis = new FileInputStream(tenfilepath);
+                //Tạo đối tượng Excel
+                XSSFWorkbook wb = new XSSFWorkbook(fis);
+                XSSFSheet sheet = wb.getSheetAt(0);
+                //Lấy ra các dòng bảng bảng
+                Iterator<Row> itr = sheet.iterator();
+                //Đọc dữ liệu
+                while (itr.hasNext()) {//Lặp đến hết các dòng trong excel
+                    Row row = itr.next();//Lấy dòng tiếp theo
+                    String ma, ten, cp;
+                    java.sql.Date nbd, nkt;
+                    ma = row.getCell(0).getStringCellValue();
+                    ten = row.getCell(1).getStringCellValue();
+                    nbd =  (Date) row.getCell(2).getDateCellValue();
+                    nkt = (Date) row.getCell(3).getDateCellValue();
+                    cp = row.getCell(4).getStringCellValue();
+                    themdoitac(ma, ten, nbd, nkt, cp);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+    }
     
     
     /**
@@ -105,7 +152,6 @@ public class frmDoitac extends javax.swing.JFrame {
         in = new javax.swing.JButton();
         thoat = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
-        Nhap = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         TableDT = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
@@ -113,6 +159,10 @@ public class frmDoitac extends javax.swing.JFrame {
         TKDT = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1024, 768));
+        setMinimumSize(new java.awt.Dimension(1024, 768));
+        setPreferredSize(new java.awt.Dimension(1024, 768));
+        setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 153, 255));
@@ -155,7 +205,7 @@ public class frmDoitac extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(29, Short.MAX_VALUE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel5)
                             .addComponent(jLabel3)
@@ -252,48 +302,37 @@ public class frmDoitac extends javax.swing.JFrame {
             }
         });
 
-        Nhap.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        Nhap.setText("Nhập file");
-        Nhap.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                NhapActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(them, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(sua, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(in, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(thoat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nhaplai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(Nhap, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addComponent(nhaplai, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addComponent(them)
-                .addGap(18, 18, 18)
+                .addGap(28, 28, 28)
                 .addComponent(sua)
-                .addGap(18, 18, 18)
+                .addGap(34, 34, 34)
                 .addComponent(xoa)
-                .addGap(18, 18, 18)
+                .addGap(33, 33, 33)
                 .addComponent(in)
-                .addGap(18, 18, 18)
-                .addComponent(Nhap)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGap(32, 32, 32)
                 .addComponent(nhaplai)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addComponent(thoat)
-                .addGap(56, 56, 56))
+                .addGap(35, 35, 35))
         );
 
         TableDT.setModel(new javax.swing.table.DefaultTableModel(
@@ -326,6 +365,11 @@ public class frmDoitac extends javax.swing.JFrame {
                 TKDTActionPerformed(evt);
             }
         });
+        TKDT.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                TKDTKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -355,12 +399,12 @@ public class frmDoitac extends javax.swing.JFrame {
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1024, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
@@ -379,7 +423,8 @@ public class frmDoitac extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
         );
 
-        pack();
+        setSize(new java.awt.Dimension(1038, 775));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
@@ -587,9 +632,35 @@ public class frmDoitac extends javax.swing.JFrame {
         in.setEnabled(false); 
     }//GEN-LAST:event_TableDTMouseClicked
 
-    private void NhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NhapActionPerformed
-
-    }//GEN-LAST:event_NhapActionPerformed
+    private void TKDTKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKDTKeyReleased
+        String tk=TKDT.getText().trim();
+          try {
+            con=ConDB.ketnoiDB();
+            Statement st=con.createStatement();
+            Statement st2= con.createStatement();
+            
+            
+            String sql="Select * from DoiTac where Tenquangcao like N'%"+tk+"%'";
+            ResultSet rs= st.executeQuery(sql);
+            TableDT.removeAll();
+            String[] tdb={"Mã đối tác", "Tên quảng cáo", "Ngày bắt đầu", "Ngày kết thúc", "Chi phí"};
+            DefaultTableModel model= new DefaultTableModel(tdb, 0);
+            while(rs.next()){
+                Vector v= new Vector();
+                v.add(rs.getString("Madoitac"));
+                v.add(rs.getString("Tenquangcao"));
+                v.add(rs.getDate("Ngaybatdau"));
+                v.add(rs.getDate("Ngayketthuc"));
+                v.add(rs.getString("Chiphi"));
+                model.addRow(v);
+            }
+            
+            TableDT.setModel(model);
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_TKDTKeyReleased
 
     /**
      * @param args the command line arguments
@@ -630,7 +701,6 @@ public class frmDoitac extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser DateE;
     private com.toedter.calendar.JDateChooser DateS;
     private javax.swing.JTextField MaDT;
-    private javax.swing.JButton Nhap;
     private javax.swing.JTextField PhiQC;
     private javax.swing.JTextField TKDT;
     private javax.swing.JTable TableDT;
