@@ -895,6 +895,12 @@ public class frmBanhang extends javax.swing.JFrame {
             st.executeUpdate(sql);
             st.executeUpdate(sql2);
             JasperDesign jdesign=JRXmlLoader.load("D:\\NetBeansProjects\\quanlisieuthi\\src\\main\\java\\frmFrame\\report1.jrxml");
+            String sqlbc="select tensp, ct.soluong, ct.giaban, ct.thanhtien, tongtien\n" +
+                        "from chitietdonhang ct, donhang dh, sanpham sp\n" +
+                        "where ct.madon=dh.madon and sp.masp=ct.masp and ct.madon='"+id+"'";
+            JRDesignQuery updateQuery=new JRDesignQuery();
+            updateQuery.setText(sqlbc);          
+            jdesign.setQuery(updateQuery);
             JasperReport jreport=JasperCompileManager.compileReport(jdesign);
             JasperPrint jprint=JasperFillManager.fillReport(jreport, null,con);
             JasperViewer.viewReport(jprint);
