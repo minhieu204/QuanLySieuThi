@@ -51,22 +51,38 @@ public class frmBanhang extends javax.swing.JFrame {
         them.setEnabled(false);
         nhaplai.setEnabled(false);
         thanhtoan.setEnabled(false);
-         jLabel1.setForeground(Color.decode("#cccccc"));
-          tenkh.setForeground(Color.decode("#cccccc"));
-          jButton1.setEnabled(false);
-          tichdiem.setEnabled(false);
-          doidiem.setEnabled(false);
-          this.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                NhanvienDAO.logLogout(dangnhap.id);
-                System.exit(0); // Thoát chương trình
-            }
+        jLabel1.setForeground(Color.decode("#cccccc"));
+        tenkh.setForeground(Color.decode("#cccccc"));
+        jButton1.setEnabled(false);
+        tichdiem.setEnabled(false);
+        doidiem.setEnabled(false);
+        ngayban.setEnabled(false);
+        sohoadon.setEnabled(false);
+        this.addWindowListener(new WindowAdapter() {
+          @Override
+          public void windowClosing(WindowEvent e) {
+              NhanvienDAO.logLogout(dangnhap.id);
+              System.exit(0); // Thoát chương trình
+          }
         });
           Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             NhanvienDAO.logLogout(dangnhap.id);
         }));
-          khong.setVisible(false);
+        khong.setVisible(false);
+        ngayban.setDate(new java.util.Date());
+        try {
+            con=ConDB.ketnoiDB();
+            Statement st=con.createStatement();
+            String sql="Select top 1 madon from donhang order by madon desc";
+            ResultSet rs= st.executeQuery(sql);
+            while(rs.next()){
+                int i=rs.getInt("madon");
+                sohoadon.setText(String.valueOf(i+1));
+            }
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     String sdt="";
     String hoten="";
@@ -170,10 +186,13 @@ public class frmBanhang extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         tenkh = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
-        thanhtien1 = new javax.swing.JLabel();
         tongtien = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         khong = new javax.swing.JRadioButton();
+        jLabel16 = new javax.swing.JLabel();
+        sohoadon = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
+        ngayban = new com.toedter.calendar.JDateChooser();
 
         khachhang.setResizable(false);
         khachhang.setSize(new java.awt.Dimension(712, 431));
@@ -633,9 +652,6 @@ public class frmBanhang extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel15.setText("Tổng tiền:");
 
-        thanhtien1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        thanhtien1.setText("......................................");
-
         tongtien.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         tongtien.setText(".......................................");
 
@@ -643,6 +659,17 @@ public class frmBanhang extends javax.swing.JFrame {
         jLabel17.setText("VNĐ");
 
         grpdiem.add(khong);
+
+        jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel16.setText("Mã hóa đơn:");
+
+        sohoadon.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+
+        jLabel18.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel18.setText("Ngày bán:");
+
+        ngayban.setDateFormatString("dd/MM/yyyy");
+        ngayban.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -677,41 +704,50 @@ public class frmBanhang extends javax.swing.JFrame {
                                 .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGap(6, 6, 6)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jLabel13)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(txttiemkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1)
-                        .addComponent(jScrollPane2))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txttiemkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 424, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel15)
                         .addGap(18, 18, 18)
                         .addComponent(tongtien)
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel17)))
+                        .addComponent(jLabel17))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(sohoadon, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51)
+                        .addComponent(jLabel18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ngayban, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(425, 425, 425))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(629, 629, 629)
-                    .addComponent(thanhtien1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(630, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel13)
                             .addComponent(txttiemkiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel16)
+                            .addComponent(sohoadon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel18)
+                            .addComponent(ngayban, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jCheckBox1)
                         .addGap(11, 11, 11)
@@ -728,18 +764,13 @@ public class frmBanhang extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel15)
                             .addComponent(tongtien)
                             .addComponent(jLabel17))))
-                .addGap(0, 125, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addGap(368, 368, 368)
-                    .addComponent(thanhtien1)
-                    .addContainerGap(368, Short.MAX_VALUE)))
+                .addGap(0, 118, Short.MAX_VALUE))
         );
 
         setSize(new java.awt.Dimension(1024, 768));
@@ -841,7 +872,7 @@ public class frmBanhang extends javax.swing.JFrame {
     }//GEN-LAST:event_them3ActionPerformed
 
     private void thanhtoanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thanhtoanActionPerformed
-        int id = new java.util.Random().nextInt(1000);
+
         String tt=tongtien.getText().trim();
         if(jCheckBox1.isSelected()){
              if(sdt.equals("")){
@@ -884,15 +915,21 @@ public class frmBanhang extends javax.swing.JFrame {
         
         try {
             con=ConDB.ketnoiDB();
-            String sql= "insert into donhang values('"+id+"',"
+            Statement st= con.createStatement();
+            String sqlid="Select top 1 madon from donhang order by madon desc";
+            String sql= "insert into donhang(ngayban, tongtien, manhanvien) values("
                     + "getdate(),"
                     + "'"+tt+"',"
                     + "'"+dangnhap.id+"')";
+            st.executeUpdate(sql);
+            ResultSet rs= st.executeQuery(sqlid);
+            int id=0;
+            while(rs.next()){
+                id=rs.getInt("madon");
+            }      
             String sql2="insert into chitietdonhang(madon, masp, soluong, giaban, thanhtien) "
                     + "select '"+id+"', masp, soluongnhap, giaban, thanhtien from giohang";
             String sql3="delete from giohang";
-            Statement st= con.createStatement();
-            st.executeUpdate(sql);
             st.executeUpdate(sql2);
             JasperDesign jdesign=JRXmlLoader.load("D:\\NetBeansProjects\\quanlisieuthi\\src\\main\\java\\frmFrame\\report1.jrxml");
             String sqlbc="select tensp, ct.soluong, ct.giaban, ct.thanhtien, tongtien\n" +
@@ -923,6 +960,21 @@ public class frmBanhang extends javax.swing.JFrame {
             hoten="";
             diem=0;
             khong.setSelected(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        ngayban.setDate(new java.util.Date());
+        try {
+            con=ConDB.ketnoiDB();
+            Statement st=con.createStatement();
+            String sql="Select top 1 madon from donhang order by madon desc";
+            ResultSet rs= st.executeQuery(sql);
+            while(rs.next()){
+                int i=rs.getInt("madon");
+                sohoadon.setText(String.valueOf(i+1));
+            }
+            con.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1288,7 +1340,9 @@ public class frmBanhang extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1305,8 +1359,10 @@ public class frmBanhang extends javax.swing.JFrame {
     private javax.swing.JDialog khachhang;
     private javax.swing.JRadioButton khong;
     private javax.swing.JTextField masanpham;
+    private com.toedter.calendar.JDateChooser ngayban;
     private javax.swing.JButton nhaplai;
     private javax.swing.JTextField phone;
+    private javax.swing.JTextField sohoadon;
     private javax.swing.JTextField soluong;
     private javax.swing.JTextField soluongnhap;
     private javax.swing.JTable tabledonhang;
@@ -1315,7 +1371,6 @@ public class frmBanhang extends javax.swing.JFrame {
     private javax.swing.JLabel tenkh;
     private javax.swing.JTextField tensanpham;
     private javax.swing.JLabel thanhtien;
-    private javax.swing.JLabel thanhtien1;
     private javax.swing.JButton thanhtoan;
     private javax.swing.JButton them;
     private javax.swing.JButton them3;
