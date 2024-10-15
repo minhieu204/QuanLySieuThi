@@ -99,6 +99,8 @@ public class QLKhachhang extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(1024, 768));
+        setMinimumSize(new java.awt.Dimension(1024, 768));
         setResizable(false);
         setSize(new java.awt.Dimension(1024, 768));
 
@@ -349,7 +351,7 @@ public class QLKhachhang extends javax.swing.JFrame {
                 .addGap(39, 39, 39))
         );
 
-        pack();
+        setSize(new java.awt.Dimension(1038, 775));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 

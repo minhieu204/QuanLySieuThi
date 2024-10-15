@@ -904,7 +904,6 @@ public class frmBanhang extends javax.swing.JFrame {
             JasperReport jreport=JasperCompileManager.compileReport(jdesign);
             JasperPrint jprint=JasperFillManager.fillReport(jreport, null,con);
             JasperViewer.viewReport(jprint);
-
             st.executeUpdate(sql3);
             con.close();
             JOptionPane.showMessageDialog(this, "Thanh toán thành công!");

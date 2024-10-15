@@ -161,7 +161,6 @@ public class frmDoitac extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(1024, 768));
         setMinimumSize(new java.awt.Dimension(1024, 768));
-        setPreferredSize(new java.awt.Dimension(1024, 768));
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -576,8 +575,8 @@ public class frmDoitac extends javax.swing.JFrame {
     }//GEN-LAST:event_inActionPerformed
 
     private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
-
-        System.exit(0);
+        new Dashboard().setVisible(true);
+        dispose();
     }//GEN-LAST:event_thoatActionPerformed
 
     private void nhaplaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhaplaiActionPerformed
