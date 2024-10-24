@@ -383,108 +383,84 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
 
     private void inActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inActionPerformed
         // TODO add your handling code here:
-        try {
-            // Tạo Workbook và Sheet trong Excel
-            XSSFWorkbook workbook = new XSSFWorkbook();
-            XSSFSheet spreadsheet = workbook.createSheet("KhuyenMai");
+       try {
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        XSSFSheet spreadsheet = workbook.createSheet("ChiPhi");
 
-            XSSFRow row = null;
-            Cell cell = null;
+        XSSFRow row = null;
+        Cell cell = null; // Tiêu đề
+        row = spreadsheet.createRow(0);
+        cell = row.createCell(0, CellType.STRING);
+        cell.setCellValue("DANH SÁCH CHI PHÍ");
+        row = spreadsheet.createRow(1);
+        row.setHeight((short) 500);
+        cell = row.createCell(0, CellType.STRING);
+        cell.setCellValue("STT");
+        cell = row.createCell(1, CellType.STRING);
+        cell.setCellValue("Ngày");
+        cell = row.createCell(2, CellType.STRING);
+        cell.setCellValue("Mặt Bằng");
+        cell = row.createCell(3, CellType.STRING);
+        cell.setCellValue("Tiền Điện");
+        cell = row.createCell(4, CellType.STRING);
+        cell.setCellValue("Tiền Nước");
+        cell = row.createCell(5, CellType.STRING);
+        cell.setCellValue("Phí Sửa Chữa");
+        Connection con = ConDB.ketnoiDB();
+        String sql = "SELECT * FROM ChiPhi";
+        PreparedStatement st = con.prepareStatement(sql);
+        ResultSet rs = st.executeQuery();
 
-            row = spreadsheet.createRow(0);
-            cell = row.createCell(0, CellType.STRING);
-            cell.setCellValue("DANH SÁCH KHUYẾN MÃI");
+        int i = 0;
+        CreationHelper createHelper = workbook.getCreationHelper();
+        CellStyle dateCellStyle = workbook.createCellStyle();
+        dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
 
-            row = spreadsheet.createRow(1);
-            row.setHeight((short) 500);
-            cell = row.createCell(0, CellType.STRING);
-            cell.setCellValue("STT");
-            cell = row.createCell(1, CellType.STRING);
-            cell.setCellValue("Mã Khuyến Mãi");
-            cell = row.createCell(2, CellType.STRING);
-            cell.setCellValue("Tên Khuyến Mãi");
-            cell = row.createCell(3, CellType.STRING);
-            cell.setCellValue("Mã Sản Phẩm");
-            cell = row.createCell(4, CellType.STRING);
-            cell.setCellValue("Ngày Bắt Đầu");
-            cell = row.createCell(5, CellType.STRING);
-            cell.setCellValue("Ngày Kết Thúc");
-            cell = row.createCell(6, CellType.STRING);
-            cell.setCellValue("Giảm Giá");
-            cell = row.createCell(7, CellType.STRING);
-            cell.setCellValue("Giá Gốc");
-            cell = row.createCell(8, CellType.STRING);
-            cell.setCellValue("Giá Sau Khuyến Mãi");
-
-            Connection con = ConDB.ketnoiDB();
-            String sql = "SELECT * FROM KhuyenMai JOIN sanpham ON KhuyenMai.MaSanPham = sanpham.MaSP";
-            PreparedStatement st = con.prepareStatement(sql);
-            ResultSet rs = st.executeQuery();
-
-            int i = 0;
-            while (rs.next()) {
-                row = spreadsheet.createRow(2 + i);
-                row.setHeight((short) 400);
-
-                row.createCell(0).setCellValue(i + 1);
-                row.createCell(1).setCellValue(rs.getString("MaKhuyenMai"));
-                row.createCell(2).setCellValue(rs.getString("TenKhuyenMai"));
-                row.createCell(3).setCellValue(rs.getString("MaSanPham"));
-
-                Date ngayBatDau = new Date(rs.getDate("NgayBatDau").getTime());
-                Date ngayKetThuc = new Date(rs.getDate("NgayKetThuc").getTime());
-
-                CreationHelper createHelper = workbook.getCreationHelper();
-                CellStyle cellStyle = workbook.createCellStyle();
-                cellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
-
-                cell = row.createCell(4);
-                cell.setCellValue(ngayBatDau);
-                cell.setCellStyle(cellStyle);
-
-                cell = row.createCell(5);
-                cell.setCellValue(ngayKetThuc);
-                cell.setCellStyle(cellStyle);
-
-                row.createCell(6).setCellValue(rs.getInt("GiamGia"));
-                row.createCell(7).setCellValue(rs.getInt("GiaBan"));
-
-                java.sql.Date currentDate = new java.sql.Date(System.currentTimeMillis());
-                if (!currentDate.before(ngayBatDau) && !currentDate.after(ngayKetThuc)) {
-                    int giaBan = rs.getInt("GiaBan");
-                    int giamGia = rs.getInt("GiamGia");
-                    int giaSauKhuyenMai = giaBan * (1 - giamGia / 100);
-                    row.createCell(8).setCellValue(giaSauKhuyenMai);
-                } else {
-                    row.createCell(8).setCellValue(rs.getInt("GiaBan"));
-                }
-
-                i++;
+        while (rs.next()) {
+            row = spreadsheet.createRow(2 + i);
+            row.setHeight((short) 400);
+            row.createCell(0).setCellValue(i + 1);
+            cell = row.createCell(1);
+            java.sql.Date ngay = rs.getDate("ngay");
+            if (ngay != null) {
+                cell.setCellValue(ngay);
+                cell.setCellStyle(dateCellStyle);
+            } else {
+                cell.setCellValue("");
             }
+            row.createCell(2).setCellValue(rs.getInt("matbang"));
+            row.createCell(3).setCellValue(rs.getInt("dien"));
+            row.createCell(4).setCellValue(rs.getInt("nuoc"));
+            row.createCell(5).setCellValue(rs.getInt("suachua"));
 
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setDialogTitle("Lưu file Excel");
-
-            int userSelection = fileChooser.showSaveDialog(null);
-            if (userSelection == JFileChooser.APPROVE_OPTION) {
-                File fileToSave = fileChooser.getSelectedFile();
-                String filePath = fileToSave.getAbsolutePath();
-                if (!filePath.endsWith(".xlsx")) {
-                    filePath += ".xlsx";
-                }
-                FileOutputStream fileOut = new FileOutputStream(filePath);
-                workbook.write(fileOut);
-                fileOut.close();
-                JOptionPane.showMessageDialog(this, "Xuất dữ liệu ra Excel thành công!");
-            }
-
-            rs.close();
-            st.close();
-            con.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Lỗi khi xuất dữ liệu ra Excel.");
+            i++;
         }
+        for (int j = 0; j < 6; j++) {
+            spreadsheet.autoSizeColumn(j);
+        }
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Lưu file Excel");
+
+        int userSelection = fileChooser.showSaveDialog(null);
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            String filePath = fileToSave.getAbsolutePath();
+            if (!filePath.endsWith(".xlsx")) {
+                filePath += ".xlsx";
+            }
+            FileOutputStream fileOut = new FileOutputStream(filePath);
+            workbook.write(fileOut);
+            fileOut.close();
+            workbook.close();
+            JOptionPane.showMessageDialog(this, "Xuất dữ liệu ra Excel thành công!");
+        }
+        rs.close();
+        st.close();
+        con.close();
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(this, "Lỗi khi xuất dữ liệu ra Excel.");
+    }
     }//GEN-LAST:event_inActionPerformed
 
     private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
