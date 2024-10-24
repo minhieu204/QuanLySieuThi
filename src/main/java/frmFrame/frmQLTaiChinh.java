@@ -40,10 +40,10 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
         jToolBar1 = new javax.swing.JToolBar();
         btnqlcp = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jSeparator3 = new javax.swing.JToolBar.Separator();
-        btlqldt = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
-        jSeparator4 = new javax.swing.JToolBar.Separator();
+        jButton1 = new javax.swing.JButton();
+        jSeparator5 = new javax.swing.JToolBar.Separator();
+        jSeparator6 = new javax.swing.JToolBar.Separator();
         jLabel1 = new javax.swing.JLabel();
         pnMain = new javax.swing.JPanel();
 
@@ -71,31 +71,23 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
         jSeparator1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jToolBar1.add(jSeparator1);
 
-        jSeparator3.setToolTipText("");
-        jSeparator3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jToolBar1.add(jSeparator3);
-
-        btlqldt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        btlqldt.setText("Quản Lý Doanh Thu");
-        btlqldt.setToolTipText("");
-        btlqldt.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        btlqldt.setFocusable(false);
-        btlqldt.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btlqldt.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btlqldt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btlqldtActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btlqldt);
-
         jSeparator2.setToolTipText("");
         jSeparator2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jToolBar1.add(jSeparator2);
 
-        jSeparator4.setToolTipText("");
-        jSeparator4.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jToolBar1.add(jSeparator4);
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jButton1.setText("Thống Kê");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton1);
+        jToolBar1.add(jSeparator5);
+        jToolBar1.add(jSeparator6);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 153, 255));
@@ -125,7 +117,7 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnMain, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
+                .addComponent(pnMain, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -138,10 +130,10 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
         showPanel(new PanelQLChiPhi());
     }//GEN-LAST:event_btnqlcpActionPerformed
 
-    private void btlqldtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btlqldtActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        showPanel(new PanelQLDoanhThu());
-    }//GEN-LAST:event_btlqldtActionPerformed
+        showPanel(new Panelthongke());
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,13 +174,13 @@ public class frmQLTaiChinh extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btlqldt;
     private javax.swing.JButton btnqlcp;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
-    private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JToolBar.Separator jSeparator5;
+    private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel pnMain;
     // End of variables declaration//GEN-END:variables

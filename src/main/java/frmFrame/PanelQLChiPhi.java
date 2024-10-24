@@ -36,11 +36,7 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
     public PanelQLChiPhi() {
         initComponents();
         loadTable();
-        datee.addPropertyChangeListener("date", evt -> {tinhDoanhThuNgay();});
-        luongnhanvien.setEnabled(false);
-        tienquangcao.setEnabled(false);
-        tiennam.setEnabled(false);
-        tienthang.setEnabled(false); 
+        
     }
 
     /**
@@ -57,17 +53,15 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         String sql = "SELECT * FROM ChiPhi";
         ResultSet rs = st.executeQuery(sql);
 
-        DefaultTableModel model = new DefaultTableModel(new String[]{"Mã Hóa Đơn", "Ngày", "Lương Nân Viên", "Tiền Mặt Bằng", "Tiền Điện", "Tiền Nước", "Tiền Quảng Cáo", "Tiền Sửa Chữa "}, 0);
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Mã Hóa Đơn", "Ngày", "Tiền Mặt Bằng", "Tiền Điện", "Tiền Nước", "Tiền Sửa Chữa "}, 0);
 
         while (rs.next()) {
             Vector<Object> v = new Vector<>();
             v.add(rs.getString("id"));
             v.add(rs.getDate("ngay").toString());
-            v.add(rs.getInt("luongNV"));
             v.add(rs.getInt("matbang"));
             v.add(rs.getInt("dien"));
             v.add(rs.getInt("nuoc"));
-            v.add(rs.getInt("quangcao"));
             v.add(rs.getInt("suachua")); 
             model.addRow(v);
         }
@@ -79,98 +73,19 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         JOptionPane.showMessageDialog(null, "Lỗi khi tải dữ liệu!");
     }
 }
-    
-    
-    private void tinhDoanhThuNgay() {
-    if (datee.getDate() != null) {
-        try {
-            Connection conn = ConDB.ketnoiDB();
-            PreparedStatement ps = conn.prepareStatement("SELECT SUM(tienduocnhan) AS tongluong FROM luong WHERE CONVERT(date, ngaynhan) = ?");
-            
-            java.sql.Date ngay = new java.sql.Date(datee.getDate().getTime());
-            ps.setDate(1, ngay);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-               luongnhanvien.setText(String.valueOf(rs.getInt("tongluong")));
-            }
-            
-            
-            PreparedStatement pscc = conn.prepareStatement("SELECT SUM(Chiphi) AS chiphiquangcao FROM DoiTac WHERE CONVERT(date, ngaybatdau) = ?");
-           
-            pscc.setDate(1, ngay);
-            
-            ResultSet rscc = pscc.executeQuery();
-            if (rscc.next()) {
-               tienquangcao.setText(String.valueOf(rscc.getInt("chiphiquangcao")));
-            }
-            conn.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-}
-    
-    private void tinhDoanhThuTheoThang() {
-    try {
-            Connection conn = ConDB.ketnoiDB();
-            java.util.Calendar cal = java.util.Calendar.getInstance(); 
-            int month = cal.get(java.util.Calendar.MONTH) + 1; 
-            int year = cal.get(java.util.Calendar.YEAR); 
-
-            PreparedStatement ps = conn.prepareStatement("SELECT (SUM(luongNV) + SUM(matbang) + SUM(dien) + SUM(nuoc) + SUM(quangcao) + SUM(suachua)) AS tongchi FROM ChiPhi WHERE MONTH(ngay) = ? AND YEAR(ngay) = ?");
-
-            ps.setInt(1, month);
-            ps.setInt(2, year);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                tienthang.setText(String.valueOf(rs.getDouble("tongchi")));
-            }
-
-            conn.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-    
-    private void tinhDoanhThuTheoNam() {
-    try {
-        Connection conn = ConDB.ketnoiDB();
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        int year = cal.get(java.util.Calendar.YEAR);
-
-        PreparedStatement ps = conn.prepareStatement("SELECT (SUM(luongNV) + SUM(matbang) + SUM(dien) + SUM(nuoc) + SUM(quangcao) + SUM(suachua)) AS tongchi FROM ChiPhi WHERE YEAR(ngay) = ?");
-        
-        ps.setInt(1, year);
-
-        ResultSet rs = ps.executeQuery();
-        if (rs.next()) {
-            tiennam.setText(String.valueOf(rs.getDouble("tongchi")));
-        }
-
-        conn.close();
-    } catch (Exception e) {
-        JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
-    }
-}
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        luongnhanvien = new javax.swing.JTextField();
         tiendien = new javax.swing.JTextField();
         tiennuoc = new javax.swing.JTextField();
         tienmatbang = new javax.swing.JTextField();
-        tienquangcao = new javax.swing.JTextField();
         phisuachua = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         datee = new com.toedter.calendar.JDateChooser();
@@ -183,16 +98,8 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         in = new javax.swing.JButton();
         thoat = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
-        bttk = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        tienthang = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
-        tiennam = new javax.swing.JTextField();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông Tin Chi Phí", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel1.setText("Lương nhân viên: ");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("tiền điên :");
@@ -203,26 +110,14 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Tiền mặt bằng :");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel5.setText("Tiền quảng cáo :");
-
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel6.setText("Phí sửa chữa :");
-
-        luongnhanvien.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        luongnhanvien.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                luongnhanvienActionPerformed(evt);
-            }
-        });
 
         tiendien.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         tiennuoc.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         tienmatbang.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        tienquangcao.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         phisuachua.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
@@ -236,25 +131,21 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(37, 37, 37)
+                        .addGap(32, 32, 32)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tiennuoc)
-                            .addComponent(tiendien)
-                            .addComponent(luongnhanvien, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(40, 40, 40)
+                            .addComponent(tiendien, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(45, 45, 45)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(tienmatbang)
-                            .addComponent(tienquangcao)
                             .addComponent(phisuachua, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(108, 108, 108)
@@ -270,25 +161,24 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(datee, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(tienmatbang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(luongnhanvien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(70, 70, 70)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel2)
-                    .addComponent(tienquangcao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(tiendien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(70, 70, 70)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel3)
-                    .addComponent(tiennuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(phisuachua, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(tienmatbang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(tiendien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(70, 70, 70)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel6)
+                                .addComponent(phisuachua, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel3)
+                                .addComponent(tiennuoc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(90, 90, 90))
         );
 
         tablet.setModel(new javax.swing.table.DefaultTableModel(
@@ -359,14 +249,6 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             }
         });
 
-        bttk.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        bttk.setText("Tìm kiếm");
-        bttk.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bttkActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -374,7 +256,6 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(25, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(bttk, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(thoat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhaplai, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(in, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -398,20 +279,8 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
                 .addComponent(nhaplai)
                 .addGap(28, 28, 28)
                 .addComponent(thoat)
-                .addGap(18, 18, 18)
-                .addComponent(bttk)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel8.setText("Tổng Chi Phí Tháng : ");
-
-        tienthang.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel9.setText("Tổng Chi Phí Năm : ");
-
-        tiennam.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -424,60 +293,42 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(115, 115, 115)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tienthang, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tiennam, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(105, 105, 105)))
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(tienthang, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9)
-                    .addComponent(tiennam, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_themActionPerformed
        try {
         Connection con = ConDB.ketnoiDB();
-        PreparedStatement ps = con.prepareStatement("INSERT INTO ChiPhi (ngay, luongNV, matbang, dien, nuoc, quangcao, suachua) VALUES (?, ?, ?, ?, ?, ?,?)");
+        PreparedStatement ps = con.prepareStatement("INSERT INTO ChiPhi (ngay ,matbang, dien, nuoc,  suachua) VALUES (?, ?, ?, ?, ?)");
         
         java.sql.Date ngay = new java.sql.Date(datee.getDate().getTime());
         ps.setDate(1, ngay);
-        ps.setInt(2, Integer.parseInt(luongnhanvien.getText()));
-        ps.setInt(3, Integer.parseInt(tienmatbang.getText()));
-        ps.setInt(4, Integer.parseInt(tiendien.getText()));
-        ps.setInt(5, Integer.parseInt(tiennuoc.getText()));
-        ps.setInt(6, Integer.parseInt(tienquangcao.getText()));
-        ps.setInt(7, Integer.parseInt(phisuachua.getText()));
+        ps.setInt(2, Integer.parseInt(tienmatbang.getText()));
+        ps.setInt(3, Integer.parseInt(tiendien.getText()));
+        ps.setInt(4, Integer.parseInt(tiennuoc.getText()));
+        ps.setInt(5, Integer.parseInt(phisuachua.getText()));
         ps.executeUpdate();
         JOptionPane.showMessageDialog(this, "Thêm thành công!");
         loadTable();
-        tinhDoanhThuTheoThang();
-        tinhDoanhThuTheoNam();
+       
         con.close();
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Lỗi khi thêm: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
     }
+       
     }//GEN-LAST:event_themActionPerformed
 
     private void suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suaActionPerformed
@@ -486,17 +337,14 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             try {
                 String maHoaDon = tablet.getValueAt(selectedRow, 0).toString(); 
                 Connection con = ConDB.ketnoiDB();
-                PreparedStatement ps = con.prepareStatement("UPDATE ChiPhi SET ngay=?, luongNV=?, dien=?, nuoc=?, quangcao=?, suachua=? WHERE id=?");
-
+                PreparedStatement ps = con.prepareStatement("UPDATE ChiPhi SET ngay=? ,matbang=?, dien=?, nuoc=?, suachua=? WHERE id=?");
                 java.sql.Date ngay = new java.sql.Date(datee.getDate().getTime());
                 ps.setDate(1, ngay);
-                ps.setInt(2, Integer.parseInt(luongnhanvien.getText()));
+                ps.setInt(2, Integer.parseInt(tienmatbang.getText()));
                 ps.setInt(3, Integer.parseInt(tiendien.getText()));
                 ps.setInt(4, Integer.parseInt(tiennuoc.getText()));
-                ps.setInt(5, Integer.parseInt(tienquangcao.getText()));
-                ps.setInt(6, Integer.parseInt(phisuachua.getText()));
-                ps.setString(7, maHoaDon);
-
+                ps.setInt(5, Integer.parseInt(phisuachua.getText()));
+                ps.setString(6, maHoaDon);
                 ps.executeUpdate();
                 JOptionPane.showMessageDialog(this, "Sửa thành công!");
                 loadTable(); 
@@ -646,62 +494,46 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
     }//GEN-LAST:event_thoatActionPerformed
 
     private void nhaplaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhaplaiActionPerformed
-        luongnhanvien.setText("");
+       
         tiendien.setText("");
         tiennuoc.setText("");
         tienmatbang.setText("");
         datee.setDate(null);
         phisuachua.setText("");
-        tienquangcao.setText("");
+       them.setEnabled(true);
+       in.setEnabled(true);
     }//GEN-LAST:event_nhaplaiActionPerformed
-
-    private void bttkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttkActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_bttkActionPerformed
 
     private void tabletMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabletMouseClicked
         // TODO add your handling code here:
     int i = tablet.getSelectedRow(); 
     DefaultTableModel model = (DefaultTableModel) tablet.getModel();
-
-    
-    luongnhanvien.setText(model.getValueAt(i, 2).toString()); 
-    tiendien.setText(model.getValueAt(i, 4).toString()); 
-    tienmatbang.setText(model.getValueAt(i, 3).toString()); 
-    tiennuoc.setText(model.getValueAt(i, 5).toString()); 
-    tienquangcao.setText(model.getValueAt(i, 6).toString());
-    phisuachua.setText(model.getValueAt(i, 7).toString());
+    tiendien.setText(model.getValueAt(i, 3).toString()); 
+    tienmatbang.setText(model.getValueAt(i, 2).toString()); 
+    tiennuoc.setText(model.getValueAt(i, 4).toString()); 
+    phisuachua.setText(model.getValueAt(i, 5).toString());
     try {
         java.util.Date dateee = new SimpleDateFormat("yyyy-MM-dd").parse(model.getValueAt(i, 1).toString());
         datee.setDate(dateee); 
     } catch (Exception e) {
         e.printStackTrace();
     }
+    them.setEnabled(false);
+       in.setEnabled(false);
     }//GEN-LAST:event_tabletMouseClicked
-
-    private void luongnhanvienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_luongnhanvienActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_luongnhanvienActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bttk;
     private com.toedter.calendar.JDateChooser datee;
     private javax.swing.JButton in;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField luongnhanvien;
     private javax.swing.JButton nhaplai;
     private javax.swing.JTextField phisuachua;
     private javax.swing.JButton sua;
@@ -710,15 +542,13 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
     private javax.swing.JButton thoat;
     private javax.swing.JTextField tiendien;
     private javax.swing.JTextField tienmatbang;
-    private javax.swing.JTextField tiennam;
     private javax.swing.JTextField tiennuoc;
-    private javax.swing.JTextField tienquangcao;
-    private javax.swing.JTextField tienthang;
     private javax.swing.JButton xoa;
     // End of variables declaration//GEN-END:variables
 
     private void dispose() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
 
 }
