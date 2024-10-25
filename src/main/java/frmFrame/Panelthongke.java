@@ -42,7 +42,6 @@ public class Panelthongke extends javax.swing.JPanel {
         tongluong.setEnabled(false);
         tongnhaphang.setEnabled(false);
         tongquangcao.setEnabled(false);
-
         xoa1.setEnabled(false);
     }
     
@@ -60,8 +59,8 @@ public class Panelthongke extends javax.swing.JPanel {
         while (rs.next()) {
             Vector<Object> v = new Vector<>();
             v.add(rs.getInt("id"));
-            v.add(rs.getDate("NgayBatDau").toString());
-            v.add(rs.getDate("NgayKetThuc").toString());
+            v.add(rs.getDate("NgayBatDau"));
+            v.add(rs.getDate("NgayKetThuc"));
             v.add(rs.getFloat("LuongNhanVien"));
             v.add(rs.getInt("PhiQuangCao"));
             v.add(rs.getInt("ChiPhi"));
@@ -127,7 +126,7 @@ public class Panelthongke extends javax.swing.JPanel {
             stmtBanhang.setDate(2, new java.sql.Date(ngayKetThuc.getTime()));
             ResultSet rsBanhang = stmtBanhang.executeQuery();
             if (rsBanhang.next()) {
-                tongbanhang.setText(rsNhaphang.getString(1) != null ? rsBanhang.getString(1) : "0");
+                tongbanhang.setText(rsBanhang.getString(1) != null ? rsBanhang.getString(1) : "0");
             }
             
             
@@ -138,7 +137,7 @@ public class Panelthongke extends javax.swing.JPanel {
             stmtchiphi.setDate(2, new java.sql.Date(ngayKetThuc.getTime()));
             ResultSet rschiphi = stmtchiphi.executeQuery();
             if (rschiphi.next()) {
-                tongchiphi.setText(rsNhaphang.getString(1) != null ? rschiphi.getString(1) : "0");
+                tongchiphi.setText(rschiphi.getString(1) != null ? rschiphi.getString(1) : "0");
             }
 
        
@@ -597,6 +596,9 @@ public class Panelthongke extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void them1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_them1ActionPerformed
+    
+
+    try {
     Date ngayBatDau = ngaybd.getDate();
     Date ngayKetThuc = ngaykt.getDate();
 
@@ -604,8 +606,6 @@ public class Panelthongke extends javax.swing.JPanel {
         JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày bắt đầu và ngày kết thúc.");
         return;
     }
-
-    try {
         Connection conn = ConDB.ketnoiDB();
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO thongke (NgayBatDau ,NgayKetThuc, LuongNhanVien, PhiQuangCao,  ChiPhi, TienNhapHang, TienBanHang) VALUES (?, ?, ?, ?, ?,?,?)");
         stmt.setDate(1, new java.sql.Date(ngayBatDau.getTime()));
