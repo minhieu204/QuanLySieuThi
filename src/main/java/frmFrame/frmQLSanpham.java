@@ -458,6 +458,7 @@ public class frmQLSanpham extends javax.swing.JFrame {
         soluong.setText("");
         donvitinh.setText("");
         nguoinhap.setText(dangnhap.name);
+        ngaynhap.setDate(new java.util.Date());
         masanpham.setEnabled(true);
         them.setEnabled(true);
     }//GEN-LAST:event_nhaplaiActionPerformed
