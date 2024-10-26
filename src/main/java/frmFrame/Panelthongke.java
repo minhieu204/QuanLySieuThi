@@ -198,7 +198,6 @@ public class Panelthongke extends javax.swing.JPanel {
         them1 = new javax.swing.JButton();
         xoa1 = new javax.swing.JButton();
         in1 = new javax.swing.JButton();
-        thoat1 = new javax.swing.JButton();
         nhaplai1 = new javax.swing.JButton();
         bttimkiem = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -455,14 +454,6 @@ public class Panelthongke extends javax.swing.JPanel {
             }
         });
 
-        thoat1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        thoat1.setText("Thoát");
-        thoat1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                thoat1ActionPerformed(evt);
-            }
-        });
-
         nhaplai1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         nhaplai1.setText("Nhập lại");
         nhaplai1.addActionListener(new java.awt.event.ActionListener() {
@@ -490,7 +481,6 @@ public class Panelthongke extends javax.swing.JPanel {
                         .addComponent(them1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                         .addComponent(xoa1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                         .addComponent(in1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
-                        .addComponent(thoat1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                         .addComponent(nhaplai1, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE))
                     .addComponent(bttimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(22, Short.MAX_VALUE))
@@ -500,17 +490,15 @@ public class Panelthongke extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(bttimkiem)
-                .addGap(27, 27, 27)
+                .addGap(30, 30, 30)
                 .addComponent(them1)
                 .addGap(30, 30, 30)
                 .addComponent(xoa1)
-                .addGap(28, 28, 28)
+                .addGap(30, 30, 30)
                 .addComponent(in1)
-                .addGap(29, 29, 29)
+                .addGap(30, 30, 30)
                 .addComponent(nhaplai1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addComponent(thoat1)
-                .addGap(23, 23, 23))
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         table.setModel(new javax.swing.table.DefaultTableModel(
@@ -553,9 +541,9 @@ public class Panelthongke extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(34, 34, 34)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -581,9 +569,6 @@ public class Panelthongke extends javax.swing.JPanel {
     }//GEN-LAST:event_inActionPerformed
 
     private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
-        // TODO add your handling code here:
-        new Dashboard().setVisible(true);
-        dispose();
     }//GEN-LAST:event_thoatActionPerformed
 
     private void nhaplaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhaplaiActionPerformed
@@ -753,12 +738,6 @@ public class Panelthongke extends javax.swing.JPanel {
         timKiem();
     }//GEN-LAST:event_bttimkiemActionPerformed
 
-    private void thoat1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoat1ActionPerformed
-        // TODO add your handling code here:
-        new Dashboard().setVisible(true);
-        dispose();
-    }//GEN-LAST:event_thoat1ActionPerformed
-
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         // TODO add your handling code here:
         int i = table.getSelectedRow(); 
@@ -810,7 +789,6 @@ public class Panelthongke extends javax.swing.JPanel {
     private javax.swing.JButton them;
     private javax.swing.JButton them1;
     private javax.swing.JButton thoat;
-    private javax.swing.JButton thoat1;
     private javax.swing.JTextField tongbanhang;
     private javax.swing.JTextField tongchiphi;
     private javax.swing.JTextField tongluong;
@@ -819,8 +797,4 @@ public class Panelthongke extends javax.swing.JPanel {
     private javax.swing.JButton xoa;
     private javax.swing.JButton xoa1;
     // End of variables declaration//GEN-END:variables
-
-    private void dispose() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }

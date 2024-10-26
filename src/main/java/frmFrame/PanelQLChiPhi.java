@@ -96,7 +96,6 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         sua = new javax.swing.JButton();
         xoa = new javax.swing.JButton();
         in = new javax.swing.JButton();
-        thoat = new javax.swing.JButton();
         nhaplai = new javax.swing.JButton();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Thông Tin Chi Phí", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
@@ -122,7 +121,7 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
         phisuachua.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel7.setText("Chọn Ngày : ");
+        jLabel7.setText("Chọn Tháng : ");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -233,14 +232,6 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             }
         });
 
-        thoat.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        thoat.setText("Thoát");
-        thoat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                thoatActionPerformed(evt);
-            }
-        });
-
         nhaplai.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         nhaplai.setText("Nhập lại");
         nhaplai.addActionListener(new java.awt.event.ActionListener() {
@@ -256,7 +247,6 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(25, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(thoat, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(nhaplai, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(in, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(xoa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -269,17 +259,15 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(them)
-                .addGap(18, 18, 18)
+                .addGap(30, 30, 30)
                 .addComponent(sua)
-                .addGap(18, 18, 18)
+                .addGap(30, 30, 30)
                 .addComponent(xoa)
-                .addGap(18, 18, 18)
+                .addGap(30, 30, 30)
                 .addComponent(in)
-                .addGap(18, 18, 18)
+                .addGap(30, 30, 30)
                 .addComponent(nhaplai)
-                .addGap(28, 28, 28)
-                .addComponent(thoat)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -301,10 +289,10 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(59, 59, 59)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -463,12 +451,6 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
     }
     }//GEN-LAST:event_inActionPerformed
 
-    private void thoatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_thoatActionPerformed
-        // TODO add your handling code here:
-        new Dashboard().setVisible(true);
-        dispose();
-    }//GEN-LAST:event_thoatActionPerformed
-
     private void nhaplaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nhaplaiActionPerformed
        
         tiendien.setText("");
@@ -515,7 +497,6 @@ public class PanelQLChiPhi extends javax.swing.JPanel {
     private javax.swing.JButton sua;
     private javax.swing.JTable tablet;
     private javax.swing.JButton them;
-    private javax.swing.JButton thoat;
     private javax.swing.JTextField tiendien;
     private javax.swing.JTextField tienmatbang;
     private javax.swing.JTextField tiennuoc;

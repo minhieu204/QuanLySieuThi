@@ -90,28 +90,23 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     try {
         FileInputStream fis = new FileInputStream(path);
         XSSFWorkbook wb = new XSSFWorkbook(fis);
-        XSSFSheet sheet = wb.getSheetAt(0); // Lấy sheet đầu tiên của file
+        XSSFSheet sheet = wb.getSheetAt(0); 
         Iterator<Row> itr = sheet.iterator();
 
-        while (itr.hasNext()) { // Lặp qua từng dòng trong excel
-            Row row = itr.next(); // Lấy dòng tiếp theo
+        while (itr.hasNext()) { 
+            Row row = itr.next(); 
 
-            // Lấy giá trị ô bằng phương thức getCellValueAsString()
             String MaKhuyenMai = getCellValueAsString(row.getCell(0));
             String TenKhuyenMai = getCellValueAsString(row.getCell(1));
             String NgayBatDau = getCellValueAsString(row.getCell(2));
             String NgayKetThuc = getCellValueAsString(row.getCell(3));
             String MaSanPham = getCellValueAsString(row.getCell(4));
-            
-            // Kiểm tra giá trị trước khi chuyển đổi
             String giamGiaStr = getCellValueAsString(row.getCell(5));
             String giaSauGiamStr = getCellValueAsString(row.getCell(6));
             String giaGocStr = getCellValueAsString(row.getCell(7));
-
-            int GiamGia = giamGiaStr.isEmpty() ? 0 : Integer.parseInt(giamGiaStr); // Gán 0 nếu chuỗi rỗng
+            int GiamGia = giamGiaStr.isEmpty() ? 0 : Integer.parseInt(giamGiaStr);
             int GiaSauGiam = giaSauGiamStr.isEmpty() ? 0 : Integer.parseInt(giaSauGiamStr);
             int GiaGoc = giaGocStr.isEmpty() ? 0 : Integer.parseInt(giaGocStr);
-
             themkhuyenmai(MaKhuyenMai, TenKhuyenMai, NgayBatDau, NgayKetThuc, MaSanPham, GiamGia, GiaSauGiam, GiaGoc);
         }
 
@@ -124,17 +119,17 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
 
       private String getCellValueAsString(Cell cell) {
     if (cell == null) {
-        return ""; // Trả về chuỗi rỗng nếu ô là null
+        return "";
     }
     switch (cell.getCellType()) {
         case STRING:
             return cell.getStringCellValue();
         case NUMERIC:
-            return String.valueOf((int) cell.getNumericCellValue()); // Nếu là số, chuyển thành chuỗi
+            return String.valueOf((int) cell.getNumericCellValue());
         case BOOLEAN:
-            return String.valueOf(cell.getBooleanCellValue()); // Nếu là kiểu boolean, chuyển thành chuỗi
+            return String.valueOf(cell.getBooleanCellValue());
         default:
-            return ""; // Trường hợp ô có kiểu khác, trả về chuỗi rỗng
+            return "";
     }
 }
     private void themkhuyenmai(String MaKhuyenMai, String TenKhuyenMai, String NgayBatDau, String NgayKetThuc, String MaSanPham , int GiamGia ,int GiaSauGiam, int GiaGoc){
@@ -222,14 +217,12 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         txttk = new javax.swing.JTextField();
-        bttk = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
 
         jLabel9.setText("jLabel9");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(1024, 768));
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -455,12 +448,9 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                 txttkActionPerformed(evt);
             }
         });
-
-        bttk.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        bttk.setText("Tìm kiếm");
-        bttk.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bttkActionPerformed(evt);
+        txttk.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txttkKeyReleased(evt);
             }
         });
 
@@ -472,20 +462,17 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
                 .addGap(26, 26, 26)
                 .addComponent(jLabel8)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txttk, javax.swing.GroupLayout.PREFERRED_SIZE, 437, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(bttk, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                .addComponent(txttk)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(2, 2, 2)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(txttk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bttk))
-                .addContainerGap(13, Short.MAX_VALUE))
+                    .addComponent(txttk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         table.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 18))); // NOI18N
@@ -514,7 +501,7 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 984, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -774,47 +761,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_thoatActionPerformed
 
-    private void bttkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bttkActionPerformed
-        // TODO add your handling code here:
-        String maKM = txttk.getText().trim(); 
-
-    Connection conn = ConDB.ketnoiDB();
-    try {
-       
-        String sql = "SELECT MaKhuyenMai, TenKhuyenMai, LoaiKhuyenMai, NgayBatDau, NgayKetThuc, MaSanPham, DieuKienApDung, GiamGia FROM KhuyenMai WHERE MaKhuyenMai LIKE ?";
-        
-        PreparedStatement pst = conn.prepareStatement(sql);
-        pst.setString(1, "%" + maKM + "%"); 
-
-        ResultSet rs = pst.executeQuery();
-        
-      
-        DefaultTableModel model = (DefaultTableModel) table.getModel();
-        model.setRowCount(0); 
-       
-        while (rs.next()) {
-            Object[] row = {
-                rs.getString("MaKhuyenMai"),
-                rs.getString("TenKhuyenMai"),
-                rs.getString("LoaiKhuyenMai"),
-                rs.getString("MaSanPham"),
-                rs.getDate("NgayBatDau"),
-                rs.getDate("NgayKetThuc"),
-                rs.getInt("GiamGia"),
-                rs.getString("DieuKienApDung")
-               
-            };
-            model.addRow(row); 
-        }
-        
-       
-        conn.close();
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(null, "Lỗi khi tìm kiếm khuyến mãi!");
-    }
-    }//GEN-LAST:event_bttkActionPerformed
-
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         // TODO add your handling code here:
     int i = table.getSelectedRow(); 
@@ -975,6 +921,39 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void txttkKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txttkKeyReleased
+        // TODO add your handling code here:
+        String tk=txttk.getText().trim();
+          try {
+            Connection con=ConDB.ketnoiDB();
+            Statement st=con.createStatement();
+            Statement st2= con.createStatement();
+            
+            
+            String sql="Select * from KhuyenMai where TenKhuyenMai like N'%"+tk+"%'";
+            ResultSet rs= st.executeQuery(sql);
+            table.removeAll();
+            String[] tdb={"Mã Khuyến Mãi", "Tên Khuyến Mãi", "Mã Sản Phẩm", "Ngày Bắt Đầu", "Ngày Kết Thúc", "Giảm Giá", "Giá Gốc", "Giá Sau Khuyến Mãi"};
+            DefaultTableModel model= new DefaultTableModel(tdb, 0);
+            while(rs.next()){
+                Vector<Object> v = new Vector<>();
+                v.add(rs.getString("MaKhuyenMai"));
+                v.add(rs.getString("TenKhuyenMai"));
+                v.add(rs.getString("MaSanPham"));
+                v.add(rs.getDate("NgayBatDau").toString());
+                v.add(rs.getDate("NgayKetThuc").toString());
+                v.add(rs.getInt("GiamGia"));
+                v.add(rs.getInt("GiaGoc"));
+                model.addRow(v);
+            }
+            
+            table.setModel(model);
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_txttkKeyReleased
+
     /**
      * @param args the command line arguments
      */
@@ -1011,7 +990,6 @@ public class frmQLKhuyenmai extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton bttk;
     private javax.swing.JButton in;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
