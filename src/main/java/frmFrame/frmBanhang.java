@@ -309,6 +309,11 @@ public class frmBanhang extends javax.swing.JFrame {
         txthoten.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
         phone.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        phone.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                phoneKeyTyped(evt);
+            }
+        });
 
         exit.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         exit.setText("Thoát");
@@ -1139,6 +1144,13 @@ public class frmBanhang extends javax.swing.JFrame {
     private void btnthemkhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnthemkhActionPerformed
        String ht=txthoten.getText().trim();
        String phone=this.phone.getText().trim();
+         String regex;
+        regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
+        if(!Pattern.matches(regex, phone) && !phone.equals("")){
+            JOptionPane.showMessageDialog(dthemkh, "Nhập đúng số điện thoại Việt Nam");
+            this.phone.setText("");
+            return;
+        }
        if (phone.equals("") || ht.equals("")) {
         JOptionPane.showMessageDialog(dthemkh, "Vui lòng nhập đủ thông tin!");
         return;
@@ -1219,6 +1231,13 @@ public class frmBanhang extends javax.swing.JFrame {
         }
         load_tongtien();
     }//GEN-LAST:event_tichdiemActionPerformed
+
+    private void phoneKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_phoneKeyTyped
+        char c = evt.getKeyChar();
+        if (!Character.isDigit(c)) {
+        evt.consume();
+        }
+    }//GEN-LAST:event_phoneKeyTyped
 
     /**
      * @param args the command line arguments
