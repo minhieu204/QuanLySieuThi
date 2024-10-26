@@ -465,6 +465,16 @@ public class frmNhacungcap extends javax.swing.JFrame {
             String s=sodienthoai.getText();
             sodienthoai.setText(s.substring(0, s.length()-1));
         }
+        if (sodienthoai.getText().length()>=10){
+            String sdt=sodienthoai.getText();
+            String regex;
+            regex="^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[1-9]|9[0-9])[0-9]{7}$";
+            if(!Pattern.matches(regex, sdt) && !sdt.equals("")){
+                JOptionPane.showMessageDialog(this, "Nhập đúng số điện thoại Việt Nam");
+                sodienthoai.setText("");
+                return;
+            }
+        }
     }//GEN-LAST:event_sodienthoaiKeyReleased
 
     private void emailFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_emailFocusLost
